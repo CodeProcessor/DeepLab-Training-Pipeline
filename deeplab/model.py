@@ -6,20 +6,11 @@ source: https://keras.io/examples/vision/deeplabv3_plus/
 """
 import ssl
 
-from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
-
-ssl._create_default_https_context = ssl._create_unverified_context
-
 import tensorflow as tf
-from tensorflow import keras
+from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
 from tensorflow.keras import layers
 
-# IMAGE_SIZE = 512
-# NUM_CLASSES = 20
-# BATCH_SIZE = 4
-# DATA_DIR = "./instance-level_human_parsing/instance-level_human_parsing/Training"
-# NUM_TRAIN_IMAGES = 1000
-# NUM_VAL_IMAGES = 50
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def convolution_block(
@@ -60,8 +51,8 @@ def DilatedSpatialPyramidPooling(dspp_input):
 
 
 def DeeplabV3Plus(image_size, num_classes):
-    model_input = keras.Input(shape=(image_size[0], image_size[1], 3))
-    resnet50 = keras.applications.ResNet50(
+    model_input = tf.keras.Input(shape=(image_size[0], image_size[1], 3))
+    resnet50 = tf.keras.applications.ResNet50(
         weights="imagenet", include_top=False, input_tensor=model_input
     )
     x = resnet50.get_layer("conv4_block6_2_relu").output
@@ -81,7 +72,7 @@ def DeeplabV3Plus(image_size, num_classes):
         size=(image_size[0] // x.shape[1], image_size[1] // x.shape[2]),
         interpolation="bilinear")(x)
     model_output = layers.Conv2D(num_classes, kernel_size=(1, 1), padding="same")(x)
-    return keras.Model(inputs=model_input, outputs=model_output)
+    return tf.keras.Model(inputs=model_input, outputs=model_output)
 
 
 def CompileModel(model):
@@ -98,6 +89,7 @@ def CompileModel(model):
     )
 
     return model
+
 
 if __name__ == '__main__':
     model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
