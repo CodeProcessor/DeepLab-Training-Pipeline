@@ -1,0 +1,5 @@
+4d473c1dd8becc155b73f8504c6f6626 resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
+
+Resnet50 notop download location
+- https://storage.googleapis.com/tensorflow/keras-applications/resnet/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
+
