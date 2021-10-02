@@ -5,6 +5,8 @@
 @Time:        02/10/2021 00:03
 """
 
+PROD_SYS = False
+
 LEARNING_RATE = 1e-5
 IMAGE_SIZE = (512, 512)
 BATCH_SIZE = 4
@@ -15,7 +17,6 @@ EPOCHS = 25
 VAL_FREQ = 1
 LOAD_MODEL = False
 
-PROD_SYS = False
 NUM_TRAIN_IMAGES = -1 if PROD_SYS else 1000
 NUM_VAL_IMAGES = -1 if PROD_SYS else 50
 

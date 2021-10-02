@@ -79,7 +79,7 @@ def CompileModel(model):
     # Loss, optimizer and metrics
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     optimizer = tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE)
-    metrics = [tf.keras.metrics.Accuracy()]
+    metrics = ["accuracy"]
 
     # Compile the model
     model.compile(
@@ -93,4 +93,5 @@ def CompileModel(model):
 
 if __name__ == '__main__':
     model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
-    model.summary()
+    deeplab_model = CompileModel(model)
+    print(model.summary())

@@ -14,17 +14,16 @@ from deeplab.params import (
     BATCH_SIZE,
     NUM_TRAIN_IMAGES,
     NUM_VAL_IMAGES,
-    DATASET_DIR, PROD_SYS
+    DATASET_DIR
 )
 
 train_data_dir = os.path.join(DATASET_DIR, "Training")
-val_data_dir = os.path.join(DATASET_DIR, "Training") if PROD_SYS else os.path.join(DATASET_DIR, "Validation")
+val_data_dir = os.path.join(DATASET_DIR, "Validation")
 
 train_images = sorted(glob(os.path.join(train_data_dir, "Images/*")))[:NUM_TRAIN_IMAGES]
 train_masks = sorted(glob(os.path.join(train_data_dir, "Category_ids/*")))[:NUM_TRAIN_IMAGES]
-val_images = sorted(glob(os.path.join(val_data_dir, "Images/*")))[NUM_TRAIN_IMAGES: NUM_VAL_IMAGES + NUM_TRAIN_IMAGES]
-val_masks = sorted(glob(os.path.join(val_data_dir, "Category_ids/*")))[
-            NUM_TRAIN_IMAGES: NUM_VAL_IMAGES + NUM_TRAIN_IMAGES]
+val_images = sorted(glob(os.path.join(val_data_dir, "Images/*")))[:NUM_VAL_IMAGES]
+val_masks = sorted(glob(os.path.join(val_data_dir, "Category_ids/*")))[:NUM_VAL_IMAGES]
 
 
 def read_image(image_path, mask=False):
