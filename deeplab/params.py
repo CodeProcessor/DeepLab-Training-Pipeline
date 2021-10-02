@@ -8,16 +8,16 @@
 LEARNING_RATE = 1e-5
 IMAGE_SIZE = (512, 512)
 
-BATCH_SIZE = 2
+BATCH_SIZE = 4
 NUM_CLASSES = 20
 NUM_TRAIN_IMAGES = 1000
 NUM_VAL_IMAGES = 50
 
 WEIGHT_DECAY = 0
-EPOCHS = 5
+EPOCHS = 25
 VAL_FREQ = 1
 LOAD_MODEL = False
-LOAD_MODEL_FILE = 'my_checkpoint.h5'
+LOAD_MODEL_FILE = 'output/trained_models/depplabV3plus_epoch-10_val-loss-0.76.h5'
 
 DATA_DIR = "/home/shared/data/Training"
 CKPT_DIR = "./output/ckpt"
