@@ -16,8 +16,10 @@ NUM_VAL_IMAGES = 5
 WEIGHT_DECAY = 0
 EPOCHS = 250
 LOAD_MODEL = False
-LOAD_MODEL_FILE = 'my_checkpoint.pth'
+LOAD_MODEL_FILE = 'my_checkpoint.h5'
 
 DATA_DIR = "/home/dulanj/Datasets/CIHP/instance-level_human_parsing/instance-level_human_parsing/Training"
 # TRAIN_IMG_DIR = '/home/dulanj/Learn/Unet-Pytorch/data/train'
 # TEST_IMG_DIR = '/home/dulanj/Learn/Unet-Pytorch/data/test'
+CKPT_DIR = "./ckpt"
+TENSORBOARD_DIR = "./logs"

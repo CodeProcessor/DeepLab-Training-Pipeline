@@ -4,22 +4,13 @@
 @Time:        02/10/2021 08:01
 source: https://keras.io/examples/vision/deeplabv3_plus/
 """
-import ssl
-
-from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
-
-ssl._create_default_https_context = ssl._create_unverified_context
-
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
+from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
+import ssl
 
-# IMAGE_SIZE = 512
-# NUM_CLASSES = 20
-# BATCH_SIZE = 4
-# DATA_DIR = "./instance-level_human_parsing/instance-level_human_parsing/Training"
-# NUM_TRAIN_IMAGES = 1000
-# NUM_VAL_IMAGES = 50
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def convolution_block(
@@ -98,6 +89,7 @@ def CompileModel(model):
     )
 
     return model
+
 
 if __name__ == '__main__':
     model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
