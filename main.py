@@ -4,6 +4,7 @@
 @Author:      sgx team
 @Time:        01/10/2021 23:32
 """
+import argparse
 import os
 from glob import glob
 
@@ -15,9 +16,9 @@ from deeplab.overlay import plot_predictions
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LOAD_MODEL_FILE, PRED_OUTPUT
 from deeplab.train import train
 
-if __name__ == '__main__':
-    TRAIN = False
-    if TRAIN:
+
+def main(is_train):
+    if is_train:
         deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
         deeplab_model = CompileModel(deeplab_model)
         print(deeplab_model.summary())
@@ -35,3 +36,15 @@ if __name__ == '__main__':
             _, _, prediction_colormap = pred
             cv2.imwrite(output_image_path, prediction_colormap)
             print(f"Saved - {output_image_path}")
+
+
+def create_argparse():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--train', help='Enable if training', action='store_true')
+
+    args = parser.parse_args()
+    main(args.train)
+
+
+if __name__ == '__main__':
+    create_argparse()
