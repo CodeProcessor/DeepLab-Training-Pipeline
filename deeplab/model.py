@@ -4,11 +4,11 @@
 @Time:        02/10/2021 08:01
 source: https://keras.io/examples/vision/deeplabv3_plus/
 """
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
-from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
 import ssl
+
+import tensorflow as tf
+from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
+from tensorflow.keras import layers
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -51,8 +51,8 @@ def DilatedSpatialPyramidPooling(dspp_input):
 
 
 def DeeplabV3Plus(image_size, num_classes):
-    model_input = keras.Input(shape=(image_size[0], image_size[1], 3))
-    resnet50 = keras.applications.ResNet50(
+    model_input = tf.keras.Input(shape=(image_size[0], image_size[1], 3))
+    resnet50 = tf.keras.applications.ResNet50(
         weights="imagenet", include_top=False, input_tensor=model_input
     )
     x = resnet50.get_layer("conv4_block6_2_relu").output
@@ -72,7 +72,7 @@ def DeeplabV3Plus(image_size, num_classes):
         size=(image_size[0] // x.shape[1], image_size[1] // x.shape[2]),
         interpolation="bilinear")(x)
     model_output = layers.Conv2D(num_classes, kernel_size=(1, 1), padding="same")(x)
-    return keras.Model(inputs=model_input, outputs=model_output)
+    return tf.keras.Model(inputs=model_input, outputs=model_output)
 
 
 def CompileModel(model):

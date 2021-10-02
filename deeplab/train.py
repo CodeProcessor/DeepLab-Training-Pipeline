@@ -6,9 +6,10 @@
 """
 
 import os
-from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, TensorBoard
+
 from deeplab.dataset import load_dataset
 from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR
+from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, TensorBoard
 
 
 def create_callbacks():
@@ -33,25 +34,3 @@ def train(deeplab_model):
         validation_freq=10,
         callbacks=callbacks
     )
-
-
-# def train(deeplab_model):
-#     # Loading the data generators
-#     train_data_gen, val_data_gen = load_dataset()
-#     # TODO Callbacks
-#     callbacks = []
-#
-#     for epoch_no in range(EPOCHS):
-#         deeplab_model.fit(
-#             train_data_gen,
-#             epochs=1,
-#             verbose=1,
-#             callbacks=callbacks
-#         )
-#
-#         if epoch_no % 10 == 0:
-#             # evaluate the model
-#             scores = deeplab_model.evaluate(val_data_gen, verbose=0)
-#             print("%s: %.2f%%" % (deeplab_model.metrics_names[1], scores[1]))
-#
-#             # TODO Save the best model
