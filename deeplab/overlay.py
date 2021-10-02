@@ -4,18 +4,19 @@
 @Author:      dulanj
 @Time:        02/10/2021 19:22
 """
+import os
+
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from deeplab.dataset import read_image
 from deeplab.inference import inference
+from deeplab.params import DATASET_DIR
 from scipy.io import loadmat
 
 # Loading the Colormap
-colormap = loadmat(
-    "/home/dulanj/Datasets/CIHP/instance-level_human_parsing/instance-level_human_parsing/human_colormap.mat"
-)["colormap"]
+colormap = loadmat(os.path.join(DATASET_DIR, "human_colormap.mat"))["colormap"]
 colormap = colormap * 100
 colormap = colormap.astype(np.uint8)
 

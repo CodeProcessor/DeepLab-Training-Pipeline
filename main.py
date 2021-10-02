@@ -26,12 +26,12 @@ if __name__ == '__main__':
     else:
         deeplab_model = load_model(LOAD_MODEL_FILE)
         print(deeplab_model.summary())
-        image_list = glob("/home/dulanj/Datasets/CIHP/test/*")
+        image_list = glob("dataset/Testing/Images/*")[:10]
         pred_list = plot_predictions(image_list, model=deeplab_model)
         if not os.path.exists(PRED_OUTPUT):
             os.makedirs(PRED_OUTPUT)
         for image_path, pred in zip(image_list, pred_list):
-            image_name = os.path.basename(image_path)
+            output_image_path = os.path.join(PRED_OUTPUT, os.path.basename(image_path))
             _, _, prediction_colormap = pred
-            cv2.imwrite(os.path.join(PRED_OUTPUT, image_name), prediction_colormap)
-            print(f"Saved - {image_name}")
+            cv2.imwrite(output_image_path, prediction_colormap)
+            print(f"Saved - {output_image_path}")
