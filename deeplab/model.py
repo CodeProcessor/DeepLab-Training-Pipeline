@@ -79,7 +79,7 @@ def CompileModel(model):
     # Loss, optimizer and metrics
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     optimizer = tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE)
-    metrics = [tf.keras.metrics.MeanSquaredError()]
+    metrics = [tf.keras.metrics.Accuracy()]
 
     # Compile the model
     model.compile(
