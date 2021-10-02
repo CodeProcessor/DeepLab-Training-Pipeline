@@ -10,14 +10,15 @@ IMAGE_SIZE = (512, 512)
 
 BATCH_SIZE = 2
 NUM_CLASSES = 20
-NUM_TRAIN_IMAGES = 25
-NUM_VAL_IMAGES = 5
+NUM_TRAIN_IMAGES = 1000
+NUM_VAL_IMAGES = 50
 
 WEIGHT_DECAY = 0
-EPOCHS = 250
+EPOCHS = 5
+VAL_FREQ = 1
 LOAD_MODEL = False
 LOAD_MODEL_FILE = 'my_checkpoint.h5'
 
 DATA_DIR = "/home/shared/data/Training"
-CKPT_DIR = "./ckpt"
-TENSORBOARD_DIR = "./logs"
+CKPT_DIR = "./output/ckpt"
+TENSORBOARD_DIR = "./output/logs"
