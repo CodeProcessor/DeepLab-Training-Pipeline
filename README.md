@@ -10,6 +10,16 @@ results along object boundaries.
 
 ![image missing](assets/deeplabv3_plus_diagram.png "DeepLabV3 Diagram")
 
+## Installation
+
++ Install docker
++ Install nvidia-docker runtime
++ Download the dataset
++ Build the docker
++ Create container with the shared dataset
++ Run the training
++ View the progress using Tensorboard
+
 ## Download the dataset
 
 This is trained using Crowd Instance-level Human Parsing Dataset
