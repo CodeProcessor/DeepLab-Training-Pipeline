@@ -12,7 +12,7 @@ from deeplab.graph_viz import get_graphs
 from deeplab.inference import load_model
 from deeplab.model import DeeplabV3Plus, CompileModel
 from deeplab.overlay import plot_predictions
-from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LOAD_MODEL_FILE
+from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LOAD_MODEL_FILE, PRED_OUTPUT
 from deeplab.train import train
 
 if __name__ == '__main__':
@@ -28,8 +28,10 @@ if __name__ == '__main__':
         print(deeplab_model.summary())
         image_list = glob("/home/dulanj/Datasets/CIHP/test/*")
         pred_list = plot_predictions(image_list, model=deeplab_model)
+        if not os.path.exists(PRED_OUTPUT):
+            os.makedirs(PRED_OUTPUT)
         for image_path, pred in zip(image_list, pred_list):
             image_name = os.path.basename(image_path)
             _, _, prediction_colormap = pred
-            cv2.imwrite(image_name, prediction_colormap)
+            cv2.imwrite(os.path.join(PRED_OUTPUT, image_name), prediction_colormap)
             print(f"Saved - {image_name}")

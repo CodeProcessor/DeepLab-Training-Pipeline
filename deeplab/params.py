@@ -22,3 +22,4 @@ LOAD_MODEL_FILE = 'output/trained_models/depplabV3plus_epoch-10_val-loss-0.76.h5
 DATA_DIR = "/home/shared/data/Training"
 CKPT_DIR = "./output/ckpt"
 TENSORBOARD_DIR = "./output/logs"
+PRED_OUTPUT = "./output/pred"
