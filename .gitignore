@@ -131,6 +131,5 @@ dmypy.json
 #IDEs support
 .idea/
 
-#logs and model checkpoints
-logs/
-ckpt/
+#output directory 
+output/*
