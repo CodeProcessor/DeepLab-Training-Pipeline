@@ -1,9 +1,9 @@
 import os
 from glob import glob
+
 import cv2
 import numpy as np
 import tensorflow as tf
-from deeplab.pascal_voc import VOC_COLORMAP, VOC_CLASSES
 from deeplab.params import (
     IMAGE_SIZE,
     BATCH_SIZE,
@@ -11,14 +11,16 @@ from deeplab.params import (
     NUM_VAL_IMAGES,
     DATASET_DIR
 )
+from deeplab.pascal_voc import VOC_COLORMAP
 
-train_data_dir = os.path.join(DATASET_DIR, "Training")
-val_data_dir = os.path.join(DATASET_DIR, "Validation")
+all_masks = sorted(glob(os.path.join(DATASET_DIR, "SegmentationClass/*")))
+all_images = [os.path.join(DATASET_DIR, "JPEGImages", os.path.basename(_mask_path).split('.')[0] + '.jpg') for
+              _mask_path in all_masks]
 
-train_images = sorted(glob(os.path.join(train_data_dir, "images/*")))[:NUM_TRAIN_IMAGES]
-train_masks = sorted(glob(os.path.join(train_data_dir, "annotations/*")))[:NUM_TRAIN_IMAGES]
-val_images = sorted(glob(os.path.join(val_data_dir, "images/*")))[:NUM_VAL_IMAGES]
-val_masks = sorted(glob(os.path.join(val_data_dir, "annotations/*")))[:NUM_VAL_IMAGES]
+train_images = all_images[:NUM_TRAIN_IMAGES]
+train_masks = all_masks[:NUM_TRAIN_IMAGES]
+val_images = all_images[-NUM_VAL_IMAGES:]
+val_masks = all_masks[-NUM_VAL_IMAGES:]
 
 
 def _convert_to_segmentation_mask(mask_path):
@@ -82,10 +84,14 @@ def load_dataset():
 
 
 if __name__ == '__main__':
-    mask_path = '../dataset/Validation/annotations/2007_000032.png'
-    mask = _convert_to_segmentation_mask(mask_path)
-    cv2.imshow('mask', mask)
-    cv2.waitKey(0)
-    print(mask.shape)
-    print(f'{mask_path} - classes:', [VOC_CLASSES[int(i)] for i in np.unique(mask)])
-    load_dataset()
+    # mask_path = '../dataset/Validation/annotations/2007_000032.png'
+    # mask = _convert_to_segmentation_mask(mask_path)
+    # cv2.imshow('mask', mask)
+    # cv2.waitKey(0)
+    # print(mask.shape)
+    # print(f'{mask_path} - classes:', [VOC_CLASSES[int(i)] for i in np.unique(mask)])
+    # load_dataset()
+    [read_image(_path) for _path in train_masks]
+    [read_image(_path) for _path in train_images]
+    print(train_images)
+    print(train_masks)

@@ -17,10 +17,15 @@ EPOCHS = 3
 VAL_FREQ = 1
 LOAD_MODEL = False
 
-NUM_TRAIN_IMAGES = -1 if PROD_SYS else 1000
-NUM_VAL_IMAGES = -1 if PROD_SYS else 50
+# Pascal images
+NUM_TRAIN_IMAGES = 2200 if PROD_SYS else 100
+NUM_VAL_IMAGES = 713 if PROD_SYS else 20
 
-DATASET_DIR = "dataset"
+# CIHP images
+# NUM_TRAIN_IMAGES = -1 if PROD_SYS else 1000
+# NUM_VAL_IMAGES = -1 if PROD_SYS else 50
+
+DATASET_DIR = "dataset_voc"
 CKPT_DIR = "./output/ckpt"
 TENSORBOARD_DIR = "./output/logs"
 PRED_OUTPUT = "./output/pred"
