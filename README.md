@@ -28,15 +28,23 @@ bash install_nvidia-runtime.sh
 
 ### Download the dataset
 
-This is trained using Crowd Instance-level Human Parsing Dataset
+[comment]: <> (This is trained using Crowd Instance-level Human Parsing Dataset)
 
-Link - https://drive.google.com/uc?id=1B9A9UCJYMwTL4oBEo4RZfbMZMaZhKJaz
+[comment]: <> (Link - https://drive.google.com/uc?id=1B9A9UCJYMwTL4oBEo4RZfbMZMaZhKJaz)
+
+Pascal VOC download link
+
+http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar
 
 ### Extract the dataset and keepunder dataset-dir
 
+[comment]: <> (unzip instance-level-human-parsing.zip)
+
+[comment]: <> (mv instance-level_human_parsing <dataset-dir>)
+
 ```bash
-unzip instance-level-human-parsing.zip
-mv instance-level_human_parsing <dataset-dir>
+tar -xcf VOCtrainval_11-May-2012.tar
+mv VOCtrainval_11-May-2012 <dataset-dir>
 ```
 
 ### Build the docker
@@ -47,8 +55,9 @@ bash build.sh
 
 ### Set the path to the dataset location in docker_run.sh script
 
+[comment]: <> (DATASET_LOC=<dataset-dir>/instance-level_human_parsing/instance-level_human_parsing)
 ```bash
-DATASET_LOC=<dataset-dir>/instance-level_human_parsing/instance-level_human_parsing
+DATASET_LOC=<dataset-dir>/VOCtrainval_11-May-2012/VOCdevkit/VOC2012
 ```
 
 ### Create container with the shared dataset

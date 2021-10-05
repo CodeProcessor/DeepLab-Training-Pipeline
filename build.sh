@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-IMAGE_NAME=deeplab:v2.0
+IMAGE_NAME=deeplab:v2.1
 
 # Download model if not available
 RESNET_TOP=models/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5

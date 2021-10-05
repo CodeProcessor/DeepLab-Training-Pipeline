@@ -7,7 +7,7 @@
 
 import os
 
-from deeplab.dataset import load_dataset
+from deeplab.dataset_voc import load_dataset
 from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR, VAL_FREQ
 from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, TensorBoard, EarlyStopping
 from datetime import datetime

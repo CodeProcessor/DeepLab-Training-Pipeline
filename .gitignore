@@ -133,3 +133,6 @@ dmypy.json
 
 #output directory 
 output/*
+
+#dataset directory
+dataset/*

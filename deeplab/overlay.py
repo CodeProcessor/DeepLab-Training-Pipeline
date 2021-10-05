@@ -4,21 +4,17 @@
 @Author:      dulanj
 @Time:        02/10/2021 19:22
 """
-import os
 
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-from deeplab.dataset import read_image
+from deeplab.dataset_voc import read_image
 from deeplab.inference import inference
-from deeplab.params import DATASET_DIR
-from scipy.io import loadmat
+from deeplab.pascal_voc import VOC_COLORMAP
 
 # Loading the Colormap
-colormap = loadmat(os.path.join(DATASET_DIR, "human_colormap.mat"))["colormap"]
-colormap = colormap * 100
-colormap = colormap.astype(np.uint8)
+colormap = np.array(VOC_COLORMAP).astype(np.uint8)
 
 
 def decode_segmentation_masks(mask, colormap, n_classes):

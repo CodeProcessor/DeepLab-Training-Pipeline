@@ -6,7 +6,7 @@
 """
 import numpy as np
 import tensorflow as tf
-from deeplab.dataset import read_image
+from deeplab.dataset_voc import read_image
 
 
 def load_model(model_path):
