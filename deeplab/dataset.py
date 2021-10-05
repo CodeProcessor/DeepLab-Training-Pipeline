@@ -49,12 +49,10 @@ def generator_fn(image_list, mask_list):
 
     def generator():
         for im_path, mask_path in zip(image_list, mask_list):
-            # Synthesize an image and a class label.
             mask = _convert_to_segmentation_mask(mask_path)
-            mask = np.expand_dims(cv2.resize(mask, [IMAGE_SIZE[1], IMAGE_SIZE[0]], interpolation=cv2.INTER_AREA),
-                                  axis=-1)
+            mask = cv2.resize(mask, [IMAGE_SIZE[1], IMAGE_SIZE[0]], interpolation=cv2.INTER_AREA)
             image = preprocess_image(im_path)
-            yield image, mask
+            yield image, np.expand_dims(mask, axis=-1)
 
     return generator
 
@@ -69,7 +67,7 @@ def data_generator(image_list, mask_list):
     dataset = tf.data.Dataset.from_generator(gen,
                                              output_types=(tf.float32, tf.float32),
                                              output_shapes=((IMAGE_SIZE[0], IMAGE_SIZE[1], 3), (IMAGE_SIZE[0], IMAGE_SIZE[1], 1)))
-    # dataset = dataset.map(augment, num_parallel_calls=tf.data.AUTOTUNE)
+    # dataset = dataset.map(augment, num_parallel_calls=tf.data.AUTOTUNE)  # ToDo: Add Augmentations
     dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
     return dataset
 
