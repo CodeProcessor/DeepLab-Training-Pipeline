@@ -9,7 +9,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-from deeplab.dataset import preprocess_image
+from deeplab.dataset_voc import read_image
 from deeplab.inference import inference
 from deeplab.pascal_voc import VOC_COLORMAP
 
@@ -50,7 +50,7 @@ def plot_samples_matplotlib(display_list, figsize=(5, 3)):
 def plot_predictions(images_list, model):
     pred_list = []
     for image_file in images_list:
-        image_tensor = preprocess_image(image_file)
+        image_tensor = read_image(image_file)
         prediction_mask = inference(image_tensor=image_tensor, model=model)
         prediction_colormap = decode_segmentation_masks(prediction_mask, colormap, 20)
         overlay = get_overlay(image_tensor, prediction_colormap)

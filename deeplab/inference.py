@@ -6,7 +6,7 @@
 """
 import numpy as np
 import tensorflow as tf
-from deeplab.dataset import preprocess_image
+from deeplab.dataset_voc import read_image
 
 
 def load_model(model_path):
@@ -16,7 +16,7 @@ def load_model(model_path):
 
 def inference(model, image_path="", image_tensor=None):
     if image_tensor is None:
-        image_tensor = preprocess_image(image_path)
+        image_tensor = read_image(image_path)
     predictions = model.predict(np.expand_dims((image_tensor), axis=0))
     predictions = np.squeeze(predictions)
     predictions = np.argmax(predictions, axis=2)
