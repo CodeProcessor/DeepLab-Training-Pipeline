@@ -13,7 +13,7 @@ BATCH_SIZE = 4
 NUM_CLASSES = 21  # use 21 for pascal voc else 20
 
 WEIGHT_DECAY = 0
-EPOCHS = 3
+EPOCHS = 25 if PROD_SYS else 3
 VAL_FREQ = 1
 LOAD_MODEL = False
 
