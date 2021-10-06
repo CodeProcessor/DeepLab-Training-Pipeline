@@ -5,7 +5,7 @@
 @Time:        02/10/2021 00:03
 """
 
-PROD_SYS = True
+PROD_SYS = False
 
 LEARNING_RATE = 1e-5
 IMAGE_SIZE = (512, 512)
@@ -25,7 +25,7 @@ NUM_VAL_IMAGES = 713 if PROD_SYS else 20
 # NUM_TRAIN_IMAGES = -1 if PROD_SYS else 1000
 # NUM_VAL_IMAGES = -1 if PROD_SYS else 50
 
-DATASET_DIR = "../PascalVOC2012/VOC2012"
+DATASET_DIR = "../pascal/PascalVOC2012/VOC2012"
 CKPT_DIR = "./output/ckpt"
 TENSORBOARD_DIR = "./output/logs"
 PRED_OUTPUT = "./output/pred"

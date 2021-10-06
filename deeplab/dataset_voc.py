@@ -40,7 +40,7 @@ def _convert_to_segmentation_mask(mask_path):
 def read_image(im_path):
     image = cv2.imread(im_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = cv2.resize(image, [IMAGE_SIZE[1], IMAGE_SIZE[0]], interpolation=cv2.INTER_AREA)
+    image = cv2.resize(image, (IMAGE_SIZE[1], IMAGE_SIZE[0]), interpolation=cv2.INTER_AREA)
     image = image / 127.5 - 1
     return image
 
@@ -51,7 +51,7 @@ def generator_fn(image_list, mask_list):
     def generator():
         for im_path, mask_path in zip(image_list, mask_list):
             mask = _convert_to_segmentation_mask(mask_path)
-            mask = cv2.resize(mask, [IMAGE_SIZE[1], IMAGE_SIZE[0]], interpolation=cv2.INTER_AREA)
+            mask = cv2.resize(mask, (IMAGE_SIZE[1], IMAGE_SIZE[0]), interpolation=cv2.INTER_AREA)
             image = read_image(im_path)
             yield image, np.expand_dims(mask, axis=-1)
 
