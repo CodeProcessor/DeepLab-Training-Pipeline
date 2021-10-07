@@ -1,26 +1,35 @@
 import os
-from glob import glob
 
 import cv2
 import numpy as np
 import tensorflow as tf
+
+from deeplab.augmentation import Augment
 from deeplab.params import (
     IMAGE_SIZE,
     BATCH_SIZE,
     NUM_TRAIN_IMAGES,
     NUM_VAL_IMAGES,
-    DATASET_DIR
+    DATASET_DIR, train_txt_file_voc, val_txt_file_voc
 )
 from deeplab.pascal_voc import VOC_COLORMAP
 
-all_masks = sorted(glob(os.path.join(DATASET_DIR, "SegmentationClass/*")))
-all_images = [os.path.join(DATASET_DIR, "JPEGImages", os.path.basename(_mask_path).split('.')[0] + '.jpg') for
-              _mask_path in all_masks]
 
-train_images = all_images[:NUM_TRAIN_IMAGES]
-train_masks = all_masks[:NUM_TRAIN_IMAGES]
-val_images = all_images[-NUM_VAL_IMAGES:]
-val_masks = all_masks[-NUM_VAL_IMAGES:]
+def _get_image_list_from_file(filename):
+    with open(filename, 'r') as fp:
+        image_list = [_line.strip() for _line in fp.readlines()]
+    return image_list
+
+
+def _get_image_lists():
+    train_image_list = _get_image_list_from_file(train_txt_file_voc)
+    val_image_list = _get_image_list_from_file(val_txt_file_voc)
+    all_trn_images = [os.path.join(DATASET_DIR, "JPEGImages", _im + '.jpg') for _im in train_image_list]
+    all_val_images = [os.path.join(DATASET_DIR, "JPEGImages", _im + '.jpg') for _im in val_image_list]
+    all_trn_masks = [os.path.join(DATASET_DIR, "SegmentationClass", _im + '.png') for _im in train_image_list]
+    all_val_masks = [os.path.join(DATASET_DIR, "SegmentationClass", _im + '.png') for _im in val_image_list]
+    return all_trn_images[:NUM_TRAIN_IMAGES], all_trn_masks[:NUM_TRAIN_IMAGES], all_val_images[:NUM_VAL_IMAGES], \
+           all_val_masks[:NUM_VAL_IMAGES]
 
 
 def _convert_to_segmentation_mask(mask_path):
@@ -58,22 +67,18 @@ def generator_fn(image_list, mask_list):
     return generator
 
 
-# ToDo: Add Augmentations
-# def augment(image, mask):
-#     return image, mask
-
-
 def data_generator(image_list, mask_list):
     gen = generator_fn(image_list, mask_list)
-    dataset = tf.data.Dataset.from_generator(gen,
-                                             output_types=(tf.float32, tf.float32),
-                                             output_shapes=((IMAGE_SIZE[0], IMAGE_SIZE[1], 3), (IMAGE_SIZE[0], IMAGE_SIZE[1], 1)))
-    # dataset = dataset.map(augment, num_parallel_calls=tf.data.AUTOTUNE)  # ToDo: Add Augmentations
+    dataset = tf.data.Dataset.from_generator(gen, output_types=(tf.float32, tf.float32)
+                                             , output_shapes=(
+            (IMAGE_SIZE[0], IMAGE_SIZE[1], 3), (IMAGE_SIZE[0], IMAGE_SIZE[1], 1)))
+    dataset = dataset.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
     dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
     return dataset
 
 
 def load_dataset():
+    train_images, train_masks, val_images, val_masks = _get_image_lists()
     train_dataset = data_generator(train_images, train_masks)
     val_dataset = data_generator(val_images, val_masks)
 
@@ -90,8 +95,16 @@ if __name__ == '__main__':
     # cv2.waitKey(0)
     # print(mask.shape)
     # print(f'{mask_path} - classes:', [VOC_CLASSES[int(i)] for i in np.unique(mask)])
-    # load_dataset()
-    [read_image(_path) for _path in train_masks]
-    [read_image(_path) for _path in train_images]
-    print(train_images)
-    print(train_masks)
+
+    _train_dataset, _val_dataset = load_dataset()
+    for element in _train_dataset:
+        # print(element)
+        for i, _mask in enumerate(element[1]):
+            _name = f"mask_{i}.jpg"
+            cv2.imwrite(_name, np.uint8(_mask.numpy() * 20.))
+            print(f"Saved: {_name}")
+        for i, _image in enumerate(element[0]):
+            _name = f"image_{i}.jpg"
+            cv2.imwrite(_name, np.uint8(_image.numpy() * 255.))
+            print(f"Saved: {_name}")
+        break
