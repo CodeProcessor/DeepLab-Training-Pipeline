@@ -3,6 +3,8 @@ import os
 import cv2
 import numpy as np
 import tensorflow as tf
+
+from deeplab.augmentation import Augment
 from deeplab.params import (
     IMAGE_SIZE,
     BATCH_SIZE,
@@ -65,17 +67,12 @@ def generator_fn(image_list, mask_list):
     return generator
 
 
-# ToDo: Add Augmentations
-# def augment(image, mask):
-#     return image, mask
-
-
 def data_generator(image_list, mask_list):
     gen = generator_fn(image_list, mask_list)
-    dataset = tf.data.Dataset.from_generator(gen, output_types=(tf.float32, tf.float32),
-                                             output_shapes=(
-                                             (IMAGE_SIZE[0], IMAGE_SIZE[1], 3), (IMAGE_SIZE[0], IMAGE_SIZE[1], 1)))
-    # dataset = dataset.map(augment, num_parallel_calls=tf.data.AUTOTUNE)  # ToDo: Add Augmentations
+    dataset = tf.data.Dataset.from_generator(gen, output_types=(tf.float32, tf.float32)
+                                             , output_shapes=(
+            (IMAGE_SIZE[0], IMAGE_SIZE[1], 3), (IMAGE_SIZE[0], IMAGE_SIZE[1], 1)))
+    dataset = dataset.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
     dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
     return dataset
 
@@ -101,9 +98,13 @@ if __name__ == '__main__':
 
     _train_dataset, _val_dataset = load_dataset()
     for element in _train_dataset:
-        print(element)
+        # print(element)
         for i, _mask in enumerate(element[1]):
-            cv2.imwrite(f"mask_{i}.jpg", np.uint8(_mask.numpy() * 20.))
+            _name = f"mask_{i}.jpg"
+            cv2.imwrite(_name, np.uint8(_mask.numpy() * 20.))
+            print(f"Saved: {_name}")
         for i, _image in enumerate(element[0]):
-            cv2.imwrite(f"image_{i}.jpg", np.uint8(_image.numpy() * 255.))
+            _name = f"image_{i}.jpg"
+            cv2.imwrite(_name, np.uint8(_image.numpy() * 255.))
+            print(f"Saved: {_name}")
         break
