@@ -136,3 +136,4 @@ output/*
 
 #dataset directory
 dataset/*
+dataset_voc/*
