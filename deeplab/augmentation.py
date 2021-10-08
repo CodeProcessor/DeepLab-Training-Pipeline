@@ -20,8 +20,10 @@ class Augment(tf.keras.layers.Layer):
                                                               seed=seed)
         self.trans_labels = tf.keras.layers.RandomTranslation(height_factor=(-0.2, 0.2), width_factor=(-0.2, 0.2),
                                                               seed=seed)
+        self.scale_inputs = tf.keras.layers.RandomZoom(height_factor=(-0.2, 0.2), width_factor=(-0.2, 0.2), seed=seed)
+        self.scale_labels = tf.keras.layers.RandomZoom(height_factor=(-0.2, 0.2), width_factor=(-0.2, 0.2), seed=seed)
 
     def call(self, inputs, labels):
-        inputs = self.trans_inputs(self.flip_inputs(self.rotate_inputs(inputs)))
-        labels = self.trans_labels(self.flip_labels(self.rotate_labels(labels)))
+        inputs = self.scale_inputs(self.trans_inputs(self.flip_inputs(self.rotate_inputs(inputs))))
+        labels = self.scale_labels(self.trans_labels(self.flip_labels(self.rotate_labels(labels))))
         return inputs, labels
