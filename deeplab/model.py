@@ -7,8 +7,9 @@ source: https://keras.io/examples/vision/deeplabv3_plus/
 import ssl
 
 import tensorflow as tf
-from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
 from tensorflow.keras import layers
+
+from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -31,7 +32,7 @@ def convolution_block(
         kernel_initializer=tf.keras.initializers.GlorotNormal(seed=kernel_seed),  # xavier normal initializer
     )(block_input)
     x = layers.BatchNormalization()(x)
-    return tf.nn.relu(x)
+    return tf.nn.elu(x)
 
 
 def DilatedSpatialPyramidPooling(dspp_input):
