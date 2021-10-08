@@ -9,6 +9,7 @@ import ssl
 import tensorflow as tf
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
 from tensorflow.keras import layers
+from deeplab.custom_metrics import UpdatedMeanIoU
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -79,7 +80,7 @@ def CompileModel(model):
     # Loss, optimizer and metrics
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     optimizer = tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE)
-    metrics = ["accuracy"]
+    metrics = ["accuracy", UpdatedMeanIoU(num_classes=NUM_CLASSES)]
 
     # Compile the model
     model.compile(

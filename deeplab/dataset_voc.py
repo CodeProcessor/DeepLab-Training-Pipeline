@@ -105,11 +105,10 @@ def tfrecord_decode(tf_record):
 
 
 def data_generator_tf_records(record_paths):
-    dataset = tf.data.TFRecordDataset([name for name in record_paths])
-    dataset = dataset.map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE)
-    dataset = dataset.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
-    dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
-    return dataset
+    return tf.data.TFRecordDataset([name for name in record_paths])\
+        .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE)\
+        .map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)\
+        .batch(BATCH_SIZE, drop_remainder=True)
 
 
 def load_dataset():
