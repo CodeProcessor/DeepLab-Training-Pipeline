@@ -59,12 +59,13 @@ def read_image(im_path):
     image = cv2.imread(im_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (IMAGE_SIZE[1], IMAGE_SIZE[0]), interpolation=cv2.INTER_AREA)
-    image = image / 127.5 - 1
+    image = image / 255.  # 127.5 - 1
     return image
 
 
 def generator_fn(image_list, mask_list):
     """Return a function that takes no arguments and returns a generator."""
+
     def generator():
         for im_path, mask_path in zip(image_list, mask_list):
             mask = _convert_to_segmentation_mask(mask_path)
@@ -99,15 +100,15 @@ def tfrecord_decode(tf_record):
     sample = tf.io.parse_single_example(tf_record, features)
     image = tf.image.decode_image(sample['image/encoded'], dtype=tf.float32)
     label = tf.image.decode_image(sample['image/segmentation/class/encoded'], dtype=tf.float32)
-    image.set_shape([512, 512, 3])
-    label.set_shape([512, 512, 1])
+    image.set_shape([IMAGE_SIZE[0], IMAGE_SIZE[1], 3])
+    label.set_shape([IMAGE_SIZE[0], IMAGE_SIZE[1], 1])
     return image, label
 
 
 def data_generator_tf_records(record_paths):
-    return tf.data.TFRecordDataset([name for name in record_paths])\
-        .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE)\
-        .map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)\
+    return tf.data.TFRecordDataset([name for name in record_paths]) \
+        .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE) \
+        .map(Augment(), num_parallel_calls=tf.data.AUTOTUNE) \
         .batch(BATCH_SIZE, drop_remainder=True)
 
 
@@ -138,6 +139,6 @@ if __name__ == '__main__':
         for i, _image in enumerate(element[0]):
             _name = f"image_{i}.jpg"
             _image = cv2.cvtColor(_image.numpy(), cv2.COLOR_RGB2BGR)
-            cv2.imwrite(_name, np.uint8((_image + 1) * 127.5))
+            cv2.imwrite(_name, np.uint8(_image * 255.))  # (_image + 1) * 127.5
             print(f"Saved: {_name}")
         break
