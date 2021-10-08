@@ -12,7 +12,7 @@ from deeplab.params import (
     NUM_TRAIN_IMAGES,
     NUM_VAL_IMAGES,
     USE_TF_RECORDS,
-    DATASET_DIR, train_txt_file_voc, val_txt_file_voc
+    DATASET_DIR, train_txt_file_voc, val_txt_file_voc, TF_RECORDS_DIR
 )
 from deeplab.pascal_voc import VOC_COLORMAP
 
@@ -33,11 +33,13 @@ def _get_image_lists():
     return all_trn_images[:NUM_TRAIN_IMAGES], all_trn_masks[:NUM_TRAIN_IMAGES], all_val_images[:NUM_VAL_IMAGES], \
            all_val_masks[:NUM_VAL_IMAGES]
 
+
 def _get_tfrecord_paths_train_val():
     return [
-        sorted(glob.glob('../tfrecord/train-*')),
-        sorted(glob.glob('../tfrecord/val-*'))
+        sorted(glob.glob(TF_RECORDS_DIR + '/train-*.tfrecord')),
+        sorted(glob.glob(TF_RECORDS_DIR + '/val-*.tfrecord'))
     ]
+
 
 def _convert_to_segmentation_mask(mask_path):
     """

@@ -31,6 +31,7 @@ CKPT_DIR = "./output/ckpt"
 TENSORBOARD_DIR = "./output/logs"
 PRED_OUTPUT = "./output/pred"
 LOAD_MODEL_FILE = 'output/ckpt/depplabV3plus_epoch-10_val-loss-2.91.h5'
+TF_RECORDS_DIR = '../tfrecord'
 
 train_txt_file_voc = DATASET_DIR + "/ImageSets/Segmentation/train.txt"
 val_txt_file_voc = DATASET_DIR + "/ImageSets/Segmentation/val.txt"
