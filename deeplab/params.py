@@ -9,7 +9,7 @@ PROD_SYS = True
 
 LEARNING_RATE = 1e-5
 IMAGE_SIZE = (512, 512)
-BATCH_SIZE = 16 if PROD_SYS else 4
+BATCH_SIZE = 8 if PROD_SYS else 4
 NUM_CLASSES = 21  # use 21 for pascal voc else 20
 
 WEIGHT_DECAY = 0
