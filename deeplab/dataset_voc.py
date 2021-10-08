@@ -127,22 +127,16 @@ def load_dataset():
 
 
 if __name__ == '__main__':
-    # mask_path = '../dataset/Validation/annotations/2007_000032.png'
-    # mask = _convert_to_segmentation_mask(mask_path)
-    # cv2.imshow('mask', mask)
-    # cv2.waitKey(0)
-    # print(mask.shape)
-    # print(f'{mask_path} - classes:', [VOC_CLASSES[int(i)] for i in np.unique(mask)])
-
     _train_dataset, _val_dataset = load_dataset()
     for element in _train_dataset:
-        # print(element)
+        print(element[0].shape, element[1].shape)
         for i, _mask in enumerate(element[1]):
             _name = f"mask_{i}.jpg"
             cv2.imwrite(_name, np.uint8(_mask.numpy() * 20.))
             print(f"Saved: {_name}")
         for i, _image in enumerate(element[0]):
             _name = f"image_{i}.jpg"
-            cv2.imwrite(_name, np.uint8(_image.numpy() * 255.))
+            _image = cv2.cvtColor(_image.numpy(), cv2.COLOR_RGB2BGR)
+            cv2.imwrite(_name, np.uint8((_image + 1) * 127.5))
             print(f"Saved: {_name}")
         break
