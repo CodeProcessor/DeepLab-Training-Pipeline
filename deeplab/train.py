@@ -9,9 +9,16 @@ import os
 
 from deeplab.dataset_voc import load_dataset
 from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR, VAL_FREQ
-from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, TensorBoard, EarlyStopping
+import tensorflow as tf
+from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, TensorBoard, EarlyStopping, Callback
 from datetime import datetime
 
+logdir = TENSORBOARD_DIR + '/images/' + datetime.now().strftime("%Y%m%d-%H%M%S")
+
+
+class CustomCallback(Callback):
+    def on_train_begin(self, logs=None):
+        pass
 
 def create_callbacks():
     lr_callback = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=1e-8)
@@ -21,7 +28,7 @@ def create_callbacks():
     )
     tb_callback = TensorBoard(log_dir=os.path.join(TENSORBOARD_DIR, datetime.now().strftime("%Y%m%d-%H%M%S")))
     es_callback = EarlyStopping(patience=10)
-    return [lr_callback, ckpt_callback, tb_callback, es_callback]
+    return [lr_callback, ckpt_callback, tb_callback, es_callback, CustomCallback()]
 
 
 def train(deeplab_model):

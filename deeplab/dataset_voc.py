@@ -3,6 +3,7 @@ import os
 import cv2
 import numpy as np
 import tensorflow as tf
+import glob
 
 from deeplab.augmentation import Augment
 from deeplab.params import (
@@ -10,6 +11,7 @@ from deeplab.params import (
     BATCH_SIZE,
     NUM_TRAIN_IMAGES,
     NUM_VAL_IMAGES,
+    USE_TF_RECORDS,
     DATASET_DIR, train_txt_file_voc, val_txt_file_voc
 )
 from deeplab.pascal_voc import VOC_COLORMAP
@@ -31,6 +33,11 @@ def _get_image_lists():
     return all_trn_images[:NUM_TRAIN_IMAGES], all_trn_masks[:NUM_TRAIN_IMAGES], all_val_images[:NUM_VAL_IMAGES], \
            all_val_masks[:NUM_VAL_IMAGES]
 
+def _get_tfrecord_paths_train_val():
+    return [
+        sorted(glob.glob('../tfrecord/train-*')),
+        sorted(glob.glob('../tfrecord/val-*'))
+    ]
 
 def _convert_to_segmentation_mask(mask_path):
     """
@@ -56,7 +63,6 @@ def read_image(im_path):
 
 def generator_fn(image_list, mask_list):
     """Return a function that takes no arguments and returns a generator."""
-
     def generator():
         for im_path, mask_path in zip(image_list, mask_list):
             mask = _convert_to_segmentation_mask(mask_path)
@@ -77,10 +83,42 @@ def data_generator(image_list, mask_list):
     return dataset
 
 
+def tfrecord_decode(tf_record):
+    features = {
+        'image/encoded': tf.io.FixedLenFeature([], tf.string),
+        'image/filename': tf.io.FixedLenFeature([], tf.string),
+        'image/format': tf.io.FixedLenFeature([], tf.string),
+        'image/height': tf.io.FixedLenFeature([1], tf.int64),
+        'image/width': tf.io.FixedLenFeature([1], tf.int64),
+        'image/channels': tf.io.FixedLenFeature([1], tf.int64),
+        'image/segmentation/class/encoded': tf.io.FixedLenFeature([], tf.string),
+        'image/segmentation/class/format': tf.io.FixedLenFeature([], tf.string),
+    }
+    sample = tf.io.parse_single_example(tf_record, features)
+    image = tf.image.decode_image(sample['image/encoded'], dtype=tf.float32)
+    label = tf.image.decode_image(sample['image/segmentation/class/encoded'], dtype=tf.float32)
+    image.set_shape([512, 512, 3])
+    label.set_shape([512, 512, 1])
+    return image, label
+
+
+def data_generator_tf_records(record_paths):
+    dataset = tf.data.TFRecordDataset([name for name in record_paths])
+    dataset = dataset.map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE)
+    dataset = dataset.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
+    dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
+    return dataset
+
+
 def load_dataset():
-    train_images, train_masks, val_images, val_masks = _get_image_lists()
-    train_dataset = data_generator(train_images, train_masks)
-    val_dataset = data_generator(val_images, val_masks)
+    if USE_TF_RECORDS:
+        train, val = _get_tfrecord_paths_train_val()
+        train_dataset = data_generator_tf_records(train)
+        val_dataset = data_generator_tf_records(val)
+    else:
+        train_images, train_masks, val_images, val_masks = _get_image_lists()
+        train_dataset = data_generator(train_images, train_masks)
+        val_dataset = data_generator(val_images, val_masks)
 
     print("Train Dataset:", train_dataset)
     print("Val Dataset:", val_dataset)

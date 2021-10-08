@@ -12,6 +12,7 @@ IMAGE_SIZE = (512, 512)
 BATCH_SIZE = 8 if PROD_SYS else 4
 NUM_CLASSES = 21  # use 21 for pascal voc else 20
 
+USE_TF_RECORDS = True
 WEIGHT_DECAY = 0
 EPOCHS = 25 if PROD_SYS else 3
 VAL_FREQ = 1
