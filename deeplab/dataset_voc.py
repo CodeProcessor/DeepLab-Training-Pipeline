@@ -127,7 +127,7 @@ def load_dataset():
     if USE_TF_RECORDS:
         train, val = _get_tfrecord_paths_train_val()
         train_dataset = data_generator_tf_records(train, limit=NUM_TRAIN_IMAGES)
-        val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES, augmentations=False, batch_size=len(val))
+        val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES, augmentations=False)
     else:
         train_images, train_masks, val_images, val_masks = _get_image_lists()
         train_dataset = data_generator(train_images, train_masks)
