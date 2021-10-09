@@ -112,20 +112,22 @@ def tfrecord_decode(tf_record):
     return image, mask
 
 
-def data_generator_tf_records(record_paths, limit=-1):
-    return tf.data.TFRecordDataset([name for name in record_paths]) \
+def data_generator_tf_records(record_paths, limit=-1, augmentations=True, batch_size=BATCH_SIZE) -> tf.data.TFRecordDataset:
+    ds = tf.data.TFRecordDataset([name for name in record_paths]) \
         .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE) \
         .prefetch(limit) \
-        .cache() \
-        .map(Augment(), num_parallel_calls=tf.data.AUTOTUNE) \
-        .batch(BATCH_SIZE, drop_remainder=True)
+        .cache()
+    if augmentations:
+        ds = ds.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE) \
+                .prefetch(BATCH_SIZE)
+    return ds.batch(BATCH_SIZE, drop_remainder=True)
 
 
 def load_dataset():
     if USE_TF_RECORDS:
         train, val = _get_tfrecord_paths_train_val()
         train_dataset = data_generator_tf_records(train, limit=NUM_TRAIN_IMAGES)
-        val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES)
+        val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES, augmentations=False, batch_size=len(val))
     else:
         train_images, train_masks, val_images, val_masks = _get_image_lists()
         train_dataset = data_generator(train_images, train_masks)
