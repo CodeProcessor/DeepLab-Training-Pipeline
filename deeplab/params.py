@@ -9,7 +9,7 @@ PROD_SYS = True
 
 LEARNING_RATE = 1e-5
 IMAGE_SIZE = (512, 512)
-BATCH_SIZE = 8 if PROD_SYS else 4
+BATCH_SIZE = 1 if PROD_SYS else 4  # 8
 NUM_CLASSES = 21  # use 21 for pascal voc else 20
 
 USE_TF_RECORDS = True
@@ -19,8 +19,8 @@ VAL_FREQ = 1
 LOAD_MODEL = False
 SAVE_BEST_ONLY = not PROD_SYS
 # Pascal images
-NUM_TRAIN_IMAGES = 5000 if PROD_SYS else 50
-NUM_VAL_IMAGES = 5000 if PROD_SYS else 10
+NUM_TRAIN_IMAGES = 8 if PROD_SYS else 50  # 5000
+NUM_VAL_IMAGES = 4 if PROD_SYS else 10  # 5000
 
 # CIHP images
 # NUM_TRAIN_IMAGES = -1 if PROD_SYS else 1000
