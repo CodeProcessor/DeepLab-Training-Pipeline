@@ -98,16 +98,25 @@ def tfrecord_decode(tf_record):
         'image/segmentation/class/format': tf.io.FixedLenFeature([], tf.string),
     }
     sample = tf.io.parse_single_example(tf_record, features)
-    image = tf.image.decode_image(sample['image/encoded'], dtype=tf.float32)
-    label = tf.image.decode_image(sample['image/segmentation/class/encoded'], dtype=tf.float32)
-    image.set_shape([IMAGE_SIZE[0], IMAGE_SIZE[1], 3])
-    label.set_shape([IMAGE_SIZE[0], IMAGE_SIZE[1], 1])
-    return image, label
+    raw_image = tf.io.decode_jpeg(sample['image/encoded'], 3)
+
+    raw_height = tf.cast(sample['image/height'], tf.int32)
+    raw_width = tf.cast(sample['image/width'], tf.int32)
+
+    image = tf.image.resize(raw_image, size=IMAGE_SIZE)
+    image = tf.cast(image, tf.float32) * (1. / 127.5) - 1
+    raw_mask = tf.io.decode_jpeg(sample['image/segmentation/class/encoded'], 1)
+
+    mask = tf.image.resize(raw_mask, size=IMAGE_SIZE)
+
+    return image, mask
 
 
-def data_generator_tf_records(record_paths):
+def data_generator_tf_records(record_paths, limit=-1):
     return tf.data.TFRecordDataset([name for name in record_paths]) \
         .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE) \
+        .prefetch(limit) \
+        .cache() \
         .map(Augment(), num_parallel_calls=tf.data.AUTOTUNE) \
         .batch(BATCH_SIZE, drop_remainder=True)
 
@@ -115,8 +124,8 @@ def data_generator_tf_records(record_paths):
 def load_dataset():
     if USE_TF_RECORDS:
         train, val = _get_tfrecord_paths_train_val()
-        train_dataset = data_generator_tf_records(train)
-        val_dataset = data_generator_tf_records(val)
+        train_dataset = data_generator_tf_records(train, limit=NUM_TRAIN_IMAGES)
+        val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES)
     else:
         train_images, train_masks, val_images, val_masks = _get_image_lists()
         train_dataset = data_generator(train_images, train_masks)
