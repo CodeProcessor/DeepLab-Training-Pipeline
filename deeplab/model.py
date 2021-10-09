@@ -52,7 +52,7 @@ def DilatedSpatialPyramidPooling(dspp_input):
     return output
 
 
-def DeeplabV3Plus(image_size, num_classes):
+def DeeplabV3Plus(image_size, num_classes) -> tf.keras.Model:
     model_input = tf.keras.Input(shape=(image_size[0], image_size[1], 3))
     resnet50 = tf.keras.applications.ResNet50(
         weights="imagenet", include_top=False, input_tensor=model_input
@@ -77,7 +77,7 @@ def DeeplabV3Plus(image_size, num_classes):
     return tf.keras.Model(inputs=model_input, outputs=model_output)
 
 
-def CompileModel(model):
+def CompileModel(model: tf.keras.Model):
     # Loss, optimizer and metrics
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     optimizer = tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE)
