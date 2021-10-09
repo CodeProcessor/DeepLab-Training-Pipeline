@@ -90,8 +90,6 @@ def CompileModel(model: tf.keras.Model):
         metrics=metrics
     )
 
-    print(model)
-
     return model
 
 

@@ -118,9 +118,9 @@ def data_generator_tf_records(record_paths, limit=-1, augmentations=True, batch_
         .prefetch(limit) \
         .cache()
     if augmentations:
-        ds = ds.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE) \
-                .prefetch(BATCH_SIZE)
-    return ds.batch(BATCH_SIZE, drop_remainder=True)
+        ds = ds.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
+
+    return ds.prefetch(batch_size).batch(batch_size, drop_remainder=True)
 
 
 def load_dataset():
