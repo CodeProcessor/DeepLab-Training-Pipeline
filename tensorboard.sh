@@ -1,3 +1,3 @@
 #!/bin/bash
 
-tensorboard --logdir=output
+tensorboard --logdir=output --bind_all
