@@ -6,26 +6,34 @@
 """
 import argparse
 import os
+import sys
 from glob import glob
 
 import cv2
+
 from deeplab.graph_viz import get_graphs
-from deeplab.inference import load_model
-from deeplab.model import DeeplabV3Plus, CompileModel
+from deeplab.model import DeeplabV3Plus, CompileModel, load_model
 from deeplab.overlay import plot_predictions
-from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LOAD_MODEL_FILE, PRED_OUTPUT
+from deeplab.params import IMAGE_SIZE, NUM_CLASSES, MODEL_PATH, PRED_OUTPUT, LOAD_MODEL
 from deeplab.train import train
 
 
 def main(is_train):
     if is_train:
-        deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
-        deeplab_model = CompileModel(deeplab_model)
+        if not LOAD_MODEL:
+            deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
+            deeplab_model = CompileModel(deeplab_model)
+        else:
+            try:
+                deeplab_model = load_model(MODEL_PATH)
+            except OSError:
+                print(f"Model not found in the path: {MODEL_PATH}")
+                sys.exit(0)
         print(deeplab_model.summary())
         history = train(deeplab_model)
         get_graphs(history)
     else:
-        deeplab_model = load_model(LOAD_MODEL_FILE)
+        deeplab_model = load_model(MODEL_PATH)
         print(deeplab_model.summary())
         image_list = glob("dataset/Testing/Images/*")[:10]
         pred_list = plot_predictions(image_list, model=deeplab_model)

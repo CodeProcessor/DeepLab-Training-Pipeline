@@ -8,8 +8,8 @@ import ssl
 
 import tensorflow as tf
 from tensorflow.keras import layers
-from deeplab.custom_metrics import UpdatedMeanIoU
 
+from deeplab.custom_metrics import UpdatedMeanIoU
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -91,6 +91,11 @@ def CompileModel(model: tf.keras.Model):
     )
 
     return model
+
+
+def load_model(model_path):
+    _deeplab_model = tf.keras.models.load_model(model_path)
+    return _deeplab_model
 
 
 if __name__ == '__main__':
