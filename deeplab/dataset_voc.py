@@ -1,9 +1,9 @@
+import glob
 import os
 
 import cv2
 import numpy as np
 import tensorflow as tf
-import glob
 
 from deeplab.augmentation import Augment
 from deeplab.params import (
@@ -150,6 +150,6 @@ if __name__ == '__main__':
         for i, _image in enumerate(element[0]):
             _name = f"image_{i}.jpg"
             _image = cv2.cvtColor(_image.numpy(), cv2.COLOR_RGB2BGR)
-            cv2.imwrite(_name, np.uint8(_image * 255.))  # (_image + 1) * 127.5
+            cv2.imwrite(_name, np.uint8((_image + 1) * 127.5))
             print(f"Saved: {_name}")
         break

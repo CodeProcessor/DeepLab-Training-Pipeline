@@ -19,6 +19,15 @@ VAL_FREQ = 1
 LOAD_MODEL = False
 SAVE_BEST_ONLY = not PROD_SYS
 
+# Augmentation
+# set probability negative to disable
+AUG_PROBABILITY = {
+    "flip": 0.5,
+    "rotate": -1,
+    "trans": 0.5,
+    "scale": 0.5
+}
+
 # Pascal images
 NUM_TRAIN_IMAGES = 5000 if PROD_SYS else 20
 NUM_VAL_IMAGES = 5000 if PROD_SYS else 10
