@@ -15,6 +15,7 @@ from deeplab.params import (
     DATASET_DIR, train_txt_file_voc, val_txt_file_voc, TF_RECORDS_DIR
 )
 from deeplab.pascal_voc import VOC_COLORMAP
+from deeplab.preprocess import PreProcess
 
 
 def _get_image_list_from_file(filename):
@@ -98,16 +99,10 @@ def tfrecord_decode(tf_record):
         'image/segmentation/class/format': tf.io.FixedLenFeature([], tf.string),
     }
     sample = tf.io.parse_single_example(tf_record, features)
-    raw_image = tf.io.decode_jpeg(sample['image/encoded'], 3)
+    image = tf.io.decode_jpeg(sample['image/encoded'], 3)
+    mask = tf.io.decode_jpeg(sample['image/segmentation/class/encoded'], 1)
 
-    raw_height = tf.cast(sample['image/height'], tf.int32)
-    raw_width = tf.cast(sample['image/width'], tf.int32)
-
-    image = tf.image.resize(raw_image, size=IMAGE_SIZE)
     image = tf.cast(image, tf.float32) * (1. / 127.5) - 1
-    raw_mask = tf.io.decode_jpeg(sample['image/segmentation/class/encoded'], 1)
-
-    mask = tf.image.resize(raw_mask, size=IMAGE_SIZE)
 
     return image, mask
 
@@ -115,6 +110,7 @@ def tfrecord_decode(tf_record):
 def data_generator_tf_records(record_paths, limit=-1, augmentations=True, batch_size=BATCH_SIZE) -> tf.data.TFRecordDataset:
     ds = tf.data.TFRecordDataset([name for name in record_paths]) \
         .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE) \
+        .map(PreProcess(IMAGE_SIZE), num_parallel_calls=tf.data.AUTOTUNE) \
         .prefetch(limit) \
         .cache()
     if augmentations:
