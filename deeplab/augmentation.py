@@ -19,7 +19,7 @@ class Augment(tf.keras.layers.Layer):
         self.rotate = (preprocessing.RandomRotation(0.2, seed=seed, fill_mode="constant"), AUG_PROBABILITY["rotate"])
         self.trans = (preprocessing.RandomTranslation(height_factor=(-0.2, 0.2), width_factor=(-0.2, 0.2),
                                                       seed=seed, fill_mode='constant'), AUG_PROBABILITY["trans"])
-        self.scale = (preprocessing.RandomZoom(height_factor=(-0.2, 0), width_factor=(-0.2, 0), seed=seed,
+        self.scale = (preprocessing.RandomZoom(height_factor=(-1, 0.5), width_factor=(-1, 0.5), seed=seed,
                                                fill_mode='constant'), AUG_PROBABILITY["scale"])
 
     def call(self, inputs, labels):
