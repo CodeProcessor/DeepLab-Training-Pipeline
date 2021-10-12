@@ -33,7 +33,7 @@ class PreProcess(tf.keras.layers.Layer):
 
         padding = [[vertical_pad_up, vertical_pad_down], [horizontal_pad_left, horizontal_pad_right], [0, 0]]
         # padding_label = [[vertical_pad_up, vertical_pad_down], [horizontal_pad_left, horizontal_pad_right], [0, 0]]
-        image = tf.pad(image, padding, "CONSTANT", constant_values=-1)
+        image = tf.pad(image, padding, "CONSTANT", constant_values=0)
         label = tf.pad(label, padding, "CONSTANT", constant_values=0)
 
         image = self.resize(image)
