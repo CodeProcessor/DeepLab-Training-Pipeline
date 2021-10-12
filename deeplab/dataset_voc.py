@@ -37,7 +37,7 @@ def _get_image_lists():
 
 def _get_tfrecord_paths_train_val():
     return [
-        sorted(glob.glob(TF_RECORDS_DIR + '/train-*.tfrecord')),
+        sorted(glob.glob(TF_RECORDS_DIR + '/train*.tfrecord')),
         sorted(glob.glob(TF_RECORDS_DIR + '/val-*.tfrecord'))
     ]
 
