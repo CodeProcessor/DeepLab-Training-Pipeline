@@ -1,4 +1,5 @@
 #!/usr/bin/env python
 
 bash tensorboard.sh &
-python3 main.py --train
+nohup python3 main.py --train &
+tail -f nohup.out
