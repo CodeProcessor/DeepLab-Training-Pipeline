@@ -60,7 +60,7 @@ def read_image(im_path):
     image = cv2.imread(im_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (IMAGE_SIZE[1], IMAGE_SIZE[0]), interpolation=cv2.INTER_AREA)
-    image = image / 255.  # 127.5 - 1
+    image = image / 127.5 - 1
     return image
 
 
