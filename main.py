@@ -9,11 +9,9 @@ import os
 import sys
 from glob import glob
 
-import cv2
-
 from deeplab.graph_viz import get_graphs
 from deeplab.model import DeeplabV3Plus, CompileModel, load_model
-from deeplab.overlay import plot_predictions
+from deeplab.overlay import plot_predictions, save_cv_image
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, MODEL_PATH, PRED_OUTPUT, LOAD_MODEL
 from deeplab.train import train
 from deeplab.custom_metrics import UpdatedMeanIoU
@@ -41,10 +39,13 @@ def main(is_train):
         if not os.path.exists(PRED_OUTPUT):
             os.makedirs(PRED_OUTPUT)
         for image_path, pred in zip(image_list, pred_list):
-            output_image_path = os.path.join(PRED_OUTPUT, os.path.basename(image_path))
-            _, _, prediction_colormap = pred
-            cv2.imwrite(output_image_path, prediction_colormap)
-            print(f"Saved - {output_image_path}")
+            im, overlay, prediction_colormap = pred
+            save_folder = os.path.join(PRED_OUTPUT, os.path.basename(image_path).split('.')[0])
+            os.makedirs(save_folder, exist_ok=True)
+            save_cv_image(os.path.join(save_folder, 'mask_' + os.path.basename(image_path)), prediction_colormap)
+            save_cv_image(os.path.join(save_folder, 'overlay_' + os.path.basename(image_path)), overlay)
+            save_cv_image(os.path.join(save_folder, 'image_' + os.path.basename(image_path)), (im + 1) * 127.5)
+            print(f"Saved results to - {save_folder}")
 
 
 def create_argparse():
