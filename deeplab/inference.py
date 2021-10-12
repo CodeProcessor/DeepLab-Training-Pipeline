@@ -9,8 +9,9 @@ import tensorflow as tf
 from deeplab.dataset_voc import read_image
 
 
-def load_model(model_path):
-    deeplab_model = tf.keras.models.load_model(model_path)
+def load_model(model_path, custom_objects=None):
+    deeplab_model = tf.keras.models.load_model(model_path, custom_objects=custom_objects)
+    # deeplab_model = tf.keras.models.load_model(model_path)
     return deeplab_model
 
 

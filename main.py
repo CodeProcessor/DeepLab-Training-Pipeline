@@ -15,6 +15,7 @@ from deeplab.model import DeeplabV3Plus, CompileModel
 from deeplab.overlay import plot_predictions
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LOAD_MODEL_FILE, PRED_OUTPUT
 from deeplab.train import train
+from deeplab.custom_metrics import UpdatedMeanIoU
 
 
 def main(is_train):
@@ -25,7 +26,7 @@ def main(is_train):
         history = train(deeplab_model)
         get_graphs(history)
     else:
-        deeplab_model = load_model(LOAD_MODEL_FILE)
+        deeplab_model = load_model(LOAD_MODEL_FILE, custom_objects={'UpdatedMeanIoU': UpdatedMeanIoU})
         print(deeplab_model.summary())
         image_list = glob("dataset/Testing/Images/*")[:10]
         pred_list = plot_predictions(image_list, model=deeplab_model)
