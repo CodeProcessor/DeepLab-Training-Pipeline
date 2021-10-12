@@ -1,9 +1,9 @@
+import glob
 import os
 
 import cv2
 import numpy as np
 import tensorflow as tf
-import glob
 
 from deeplab.augmentation import Augment
 from deeplab.params import (
@@ -15,6 +15,7 @@ from deeplab.params import (
     DATASET_DIR, train_txt_file_voc, val_txt_file_voc, TF_RECORDS_DIR
 )
 from deeplab.pascal_voc import VOC_COLORMAP
+from deeplab.preprocess import PreProcess
 
 
 def _get_image_list_from_file(filename):
@@ -36,7 +37,7 @@ def _get_image_lists():
 
 def _get_tfrecord_paths_train_val():
     return [
-        sorted(glob.glob(TF_RECORDS_DIR + '/train-*.tfrecord')),
+        sorted(glob.glob(TF_RECORDS_DIR + '/train*.tfrecord')),
         sorted(glob.glob(TF_RECORDS_DIR + '/val-*.tfrecord'))
     ]
 
@@ -98,16 +99,10 @@ def tfrecord_decode(tf_record):
         'image/segmentation/class/format': tf.io.FixedLenFeature([], tf.string),
     }
     sample = tf.io.parse_single_example(tf_record, features)
-    raw_image = tf.io.decode_jpeg(sample['image/encoded'], 3)
+    image = tf.io.decode_jpeg(sample['image/encoded'], 3)
+    mask = tf.io.decode_jpeg(sample['image/segmentation/class/encoded'], 1)
 
-    raw_height = tf.cast(sample['image/height'], tf.int32)
-    raw_width = tf.cast(sample['image/width'], tf.int32)
-
-    image = tf.image.resize(raw_image, size=IMAGE_SIZE)
     image = tf.cast(image, tf.float32) * (1. / 127.5) - 1
-    raw_mask = tf.io.decode_jpeg(sample['image/segmentation/class/encoded'], 1)
-
-    mask = tf.image.resize(raw_mask, size=IMAGE_SIZE)
 
     return image, mask
 
@@ -115,6 +110,7 @@ def tfrecord_decode(tf_record):
 def data_generator_tf_records(record_paths, limit=-1, augmentations=True, batch_size=BATCH_SIZE) -> tf.data.TFRecordDataset:
     ds = tf.data.TFRecordDataset([name for name in record_paths]) \
         .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE) \
+        .map(PreProcess(IMAGE_SIZE), num_parallel_calls=tf.data.AUTOTUNE) \
         .prefetch(limit) \
         .cache()
     if augmentations:
@@ -127,7 +123,7 @@ def load_dataset():
     if USE_TF_RECORDS:
         train, val = _get_tfrecord_paths_train_val()
         train_dataset = data_generator_tf_records(train, limit=NUM_TRAIN_IMAGES)
-        val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES, augmentations=False, batch_size=len(val))
+        val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES, augmentations=False)
     else:
         train_images, train_masks, val_images, val_masks = _get_image_lists()
         train_dataset = data_generator(train_images, train_masks)
@@ -150,6 +146,6 @@ if __name__ == '__main__':
         for i, _image in enumerate(element[0]):
             _name = f"image_{i}.jpg"
             _image = cv2.cvtColor(_image.numpy(), cv2.COLOR_RGB2BGR)
-            cv2.imwrite(_name, np.uint8(_image * 255.))  # (_image + 1) * 127.5
+            cv2.imwrite(_name, np.uint8((_image + 1) * 127.5))
             print(f"Saved: {_name}")
         break
