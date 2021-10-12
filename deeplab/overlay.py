@@ -33,6 +33,8 @@ def decode_segmentation_masks(mask, colormap, n_classes):
 def get_overlay(image, colored_mask):
     image = tf.keras.preprocessing.image.array_to_img(image)
     image = np.array(image).astype(np.uint8)
+    is_bg = np.tile(np.all(colored_mask == (0, 0, 0), axis=-1), (3, 1, 1)).transpose(1, 2, 0)
+    colored_mask = np.where(is_bg, image, colored_mask)
     overlay = cv2.addWeighted(image, 0.35, colored_mask, 0.65, 0)
     return overlay
 
@@ -60,3 +62,6 @@ def plot_predictions(images_list, model):
         )
         pred_list.append(predict_image_list)
     return pred_list
+
+def save_cv_image(save_path, image):
+    cv2.imwrite(save_path, cv2.cvtColor(image.astype(np.uint8), cv2.COLOR_RGB2BGR))
