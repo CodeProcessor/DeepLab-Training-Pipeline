@@ -8,7 +8,7 @@
 PROD_SYS = True
 
 LEARNING_RATE = 5e-6
-IMAGE_SIZE = (320, 320)
+IMAGE_SIZE = (512, 512)
 BATCH_SIZE = 8 if PROD_SYS else 8
 NUM_CLASSES = 21  # use 21 for pascal voc else 20
 
@@ -32,10 +32,9 @@ AUG_PROBABILITY = {
 }
 
 # Pascal images
-NUM_TRAIN_IMAGES = 5000 if PROD_SYS else 20
-NUM_VAL_IMAGES = 5000 if PROD_SYS else 10
-train_txt_file_voc = "dataset_voc/ImageSets/Segmentation/train.txt"
-val_txt_file_voc = "dataset_voc/ImageSets/Segmentation/val.txt"
+NUM_TRAIN_IMAGES = -1 if PROD_SYS else 20
+NUM_VAL_IMAGES = -1 if PROD_SYS else 10
+PREFETCH_LIMIT = 3000
 
 # CIHP images
 # NUM_TRAIN_IMAGES = -1 if PROD_SYS else 1000

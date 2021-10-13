@@ -12,7 +12,7 @@ from deeplab.params import (
     NUM_TRAIN_IMAGES,
     NUM_VAL_IMAGES,
     USE_TF_RECORDS,
-    DATASET_DIR, train_txt_file_voc, val_txt_file_voc, TF_RECORDS_DIR
+    DATASET_DIR, train_txt_file_voc, val_txt_file_voc, TF_RECORDS_DIR, PREFETCH_LIMIT
 )
 from deeplab.pascal_voc import VOC_COLORMAP
 from deeplab.preprocess import PreProcess
@@ -109,9 +109,10 @@ def tfrecord_decode(tf_record):
 
 def data_generator_tf_records(record_paths, limit=-1, augmentations=True, batch_size=BATCH_SIZE) -> tf.data.TFRecordDataset:
     ds = tf.data.TFRecordDataset([name for name in record_paths]) \
+        .limit(limit) \
         .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE) \
         .map(PreProcess(IMAGE_SIZE), num_parallel_calls=tf.data.AUTOTUNE) \
-        .prefetch(limit) \
+        .prefetch(min(limit, PREFETCH_LIMIT)) \
         .cache()
     if augmentations:
         ds = ds.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
