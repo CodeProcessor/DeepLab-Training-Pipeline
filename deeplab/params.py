@@ -33,9 +33,8 @@ AUG_PROBABILITY = {
 
 # Pascal images
 NUM_TRAIN_IMAGES = 5000 if PROD_SYS else 20
-NUM_VAL_IMAGES = 5000 if PROD_SYS else 10
-train_txt_file_voc = "dataset_voc/ImageSets/Segmentation/train.txt"
-val_txt_file_voc = "dataset_voc/ImageSets/Segmentation/val.txt"
+NUM_VAL_IMAGES = -1 if PROD_SYS else 10
+PREFETCH_LIMIT = 3000
 
 # CIHP images
 # NUM_TRAIN_IMAGES = -1 if PROD_SYS else 1000
