@@ -28,7 +28,9 @@ AUG_PROBABILITY = {
     "flip": 0.5,
     "rotate": -1,
     "trans": 0.5,
-    "scale": 0.5
+    "scale": 0.5,
+    "gaussian": 0.5,
+    "hue": 0.5
 }
 
 # Pascal images
