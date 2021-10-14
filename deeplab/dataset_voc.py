@@ -108,16 +108,15 @@ def tfrecord_decode(tf_record):
 
 
 def data_generator_tf_records(record_paths, limit=-1, augmentations=True, batch_size=BATCH_SIZE) -> tf.data.TFRecordDataset:
-    ds = tf.data.TFRecordDataset([name for name in record_paths]) \
-        .limit(limit) \
+    ds = tf.data.TFRecordDataset([name for name in record_paths], num_parallel_reads=tf.data.AUTOTUNE) \
+        .take(limit) \
         .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE) \
         .map(PreProcess(IMAGE_SIZE), num_parallel_calls=tf.data.AUTOTUNE) \
-        .prefetch(min(limit, PREFETCH_LIMIT)) \
-        .cache()
+
     if augmentations:
         ds = ds.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
 
-    return ds.prefetch(batch_size).batch(batch_size, drop_remainder=True)
+    return ds.batch(batch_size, drop_remainder=True).prefetch(1)
 
 
 def load_dataset():
