@@ -18,12 +18,12 @@ class Augment(tf.keras.layers.Layer):
         super().__init__()
         self.flip = (preprocessing.RandomFlip(mode="horizontal", seed=seed), AUG_PROBABILITY["flip"])
         self.rotate = (preprocessing.RandomRotation(0.2, seed=seed, fill_mode="constant"), AUG_PROBABILITY["rotate"])
-        self.trans = (preprocessing.RandomTranslation(height_factor=(-0.2, 0.2), width_factor=(-0.2, 0.2),
+        self.trans = (preprocessing.RandomTranslation(height_factor=(-0.1, 0.1), width_factor=(-0.1, 0.1),
                                                       seed=seed, fill_mode='constant'), AUG_PROBABILITY["trans"])
-        self.scale = (preprocessing.RandomZoom(height_factor=(-1, 0.5), width_factor=(-1, 0.5), seed=seed,
+        self.scale = (preprocessing.RandomZoom(height_factor=(-0.2, 0.2), width_factor=(-0.2, 0.2), seed=seed,
                                                fill_mode='constant'), AUG_PROBABILITY["scale"])
 
-        self.hue = (lambda x: tf.image.random_hue(x, 0.3), AUG_PROBABILITY["hue"])
+        self.hue = (lambda x: tf.image.random_hue(x, 0.1), AUG_PROBABILITY["hue"])
         self.gau2d = (
             lambda x: tfa.image.gaussian_filter2d(x, filter_shape=(3, 3), sigma=1.0), AUG_PROBABILITY["gaussian"])
 

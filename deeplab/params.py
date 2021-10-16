@@ -27,10 +27,10 @@ MODEL_PATH = 'ckpt/depplabV3plus_epoch-457_val-loss-1.50.h5'
 AUG_PROBABILITY = {
     "flip": 0.5,
     "rotate": -1,
-    "trans": 0.5,
-    "scale": 0.5,
+    "trans": 0.7,
+    "scale": 0.7,
     "gaussian": 0.5,
-    "hue": 0.5
+    "hue": 0.2
 }
 
 # Pascal images
