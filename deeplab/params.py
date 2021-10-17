@@ -30,6 +30,8 @@ AUG_PROBABILITY = {
     "trans": 0.5,
     "scale": 0.5
 }
+# Buffer size to be used when shuffling with tf.data
+SHUFFLE_BUFFER_SIZE = BATCH_SIZE * 10
 
 # Pascal images
 NUM_TRAIN_IMAGES = 5000 if PROD_SYS else 20
