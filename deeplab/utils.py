@@ -90,7 +90,6 @@ def augment(image, label, output_size=IMAGE_SIZE, min_scale_factor=0.5, max_scal
         image, label = flip_image_and_label(image=image, label=label)
 
     label = np.expand_dims(label, axis=2)
-    print('****', image.shape, label.shape)
     return image, label
 
 
