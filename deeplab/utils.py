@@ -90,7 +90,7 @@ def augment(image, label, output_size=IMAGE_SIZE, min_scale_factor=0.5, max_scal
         image, label = flip_image_and_label(image=image, label=label)
 
     label = np.expand_dims(label, axis=2)
-
+    print('****', image.shape, label.shape)
     return image, label
 
 
@@ -99,6 +99,10 @@ class AugmentationWrapper(tf.keras.layers.Layer):
         super().__init__()
 
     def call(self, inputs, labels):
-        return tf.numpy_function(func=augment,
+        image, label = tf.numpy_function(func=augment,
                                  inp=(inputs, labels),
                                  Tout=(tf.float32, tf.float32))
+        image.set_shape(tf.TensorShape([IMAGE_SIZE[0], IMAGE_SIZE[1], 3]))
+        label.set_shape(tf.TensorShape([IMAGE_SIZE[0], IMAGE_SIZE[1], 1]))
+        return image, label
+
