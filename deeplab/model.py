@@ -10,6 +10,7 @@ import tensorflow as tf
 from tensorflow.keras import layers
 
 from deeplab.custom_metrics import UpdatedMeanIoU
+from deeplab.loss import loss_initializer_v2
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, LEARNING_RATE
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -79,14 +80,14 @@ def DeeplabV3Plus(image_size, num_classes) -> tf.keras.Model:
 
 def CompileModel(model: tf.keras.Model):
     # Loss, optimizer and metrics
-    loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    # loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     optimizer = tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE)
     metrics = ["accuracy", UpdatedMeanIoU(num_classes=NUM_CLASSES)]
 
     # Compile the model
     model.compile(
         optimizer=optimizer,
-        loss=loss,
+        loss=loss_initializer_v2,
         metrics=metrics
     )
 

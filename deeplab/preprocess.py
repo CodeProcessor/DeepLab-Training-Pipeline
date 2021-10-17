@@ -6,6 +6,8 @@
 """
 import tensorflow as tf
 
+from deeplab.params import IGNORED_CLASS_ID
+
 
 class PreProcess(tf.keras.layers.Layer):
     def __init__(self, output_shape):
@@ -16,6 +18,8 @@ class PreProcess(tf.keras.layers.Layer):
 
     def call(self, image, label):
         rescaled_size = tf.shape(label)[:2]
+        mask = label != 255
+        label = tf.where(mask, x=label, y=IGNORED_CLASS_ID)
         min_index = tf.math.argmin(rescaled_size)
         pad_value = abs(rescaled_size[0] - rescaled_size[1])
 
