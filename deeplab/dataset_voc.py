@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-from deeplab.utils import AugmentationWrapper
+from deeplab.utils import AugmentationWrapper, post_process
 from deeplab.params import (
     IMAGE_SIZE,
     BATCH_SIZE,
@@ -104,7 +104,7 @@ def tfrecord_decode(tf_record):
     image = tf.io.decode_jpeg(sample['image/encoded'], 3)
     mask = tf.io.decode_jpeg(sample['image/segmentation/class/encoded'], 1)
 
-    image = tf.cast(image, tf.float32) * (1. / 127.5) - 1
+    # image = tf.cast(image, tf.float32) * (1. / 127.5) - 1
 
     return image, mask
 
@@ -149,7 +149,8 @@ if __name__ == '__main__':
             print(f"Saved: {_name}")
         for i, _image in enumerate(element[0]):
             _name = f"image_{i}.jpg"
-            _image = cv2.cvtColor(_image.numpy(), cv2.COLOR_RGB2BGR)
-            cv2.imwrite(_name, np.uint8((_image + 1) * 127.5))
+            _image = cv2.cvtColor(post_process(_image.numpy()), cv2.COLOR_RGB2BGR)
+            # cv2.imwrite(_name, np.uint8((_image + 1) * 127.5))
+            cv2.imwrite(_name, np.uint8(_image))
             print(f"Saved: {_name}")
         break

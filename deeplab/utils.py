@@ -29,7 +29,7 @@ def resize_image_and_label(image, label, output_size):
     return image_resized, label_resized
 
 
-def pad_image_and_label(image, label, top, bottom, left, right, pixel_value=0, label_value=255):
+def pad_image_and_label(image, label, top, bottom, left, right, pixel_value=0, label_value=0):
     '''
     https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_core/py_basic_ops/py_basic_ops.html#making-borders-for-images-padding
     '''
@@ -81,7 +81,7 @@ def augment(image, label, output_size=IMAGE_SIZE, min_scale_factor=0.5, max_scal
 
     image, label = pad_image_and_label(image=image, label=label, top=vertical_pad_up, bottom=vertical_pad_down,
                                        left=horizonal_pad_left, right=horizonal_pad_right, pixel_value=0,
-                                       label_value=255)
+                                       label_value=0)
 
     image, label = random_crop(image=image, label=label, output_size=output_size)
 
@@ -99,9 +99,15 @@ class AugmentationWrapper(tf.keras.layers.Layer):
 
     def call(self, inputs, labels):
         image, label = tf.numpy_function(func=augment,
-                                 inp=(inputs, labels),
-                                 Tout=(tf.float32, tf.float32))
+                                         inp=(inputs, labels),
+                                         Tout=(tf.float32, tf.float32))
         image.set_shape(tf.TensorShape([IMAGE_SIZE[0], IMAGE_SIZE[1], 3]))
         label.set_shape(tf.TensorShape([IMAGE_SIZE[0], IMAGE_SIZE[1], 1]))
         return image, label
 
+
+def post_process(image):
+    _MEAN_RGB = [123.15, 115.90, 103.06]
+    for i in range(len(_MEAN_RGB)):
+        image[:, :, i] += _MEAN_RGB[i]
+    return image
