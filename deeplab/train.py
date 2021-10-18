@@ -8,16 +8,19 @@
 import os
 from datetime import datetime
 
-from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, TensorBoard, EarlyStopping
-
 from deeplab.dataset_voc import load_dataset
 from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR, VAL_FREQ, SAVE_BEST_ONLY
-from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, TensorBoard, EarlyStopping
-from datetime import datetime
+from tensorflow.keras.callbacks import LearningRateScheduler, ReduceLROnPlateau, ModelCheckpoint, TensorBoard, EarlyStopping
+
+
+# learning rate schedule
+def learning_rate_policy(epoch, max_iteration=EPOCHS, power=0.9):
+    return (1 - epoch / max_iteration) ** power
 
 
 def create_callbacks():
-    lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
+    lr_callback = LearningRateScheduler(learning_rate_policy)
+    # lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
     ckpt_callback = ModelCheckpoint(
         filepath=os.path.join(CKPT_DIR, 'depplabV3plus_epoch-{epoch:02d}_val-loss-{val_loss:.2f}.h5'),
         monitor='val_loss', mode='min', save_best_only=SAVE_BEST_ONLY
