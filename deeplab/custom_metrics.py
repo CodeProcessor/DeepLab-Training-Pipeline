@@ -1,5 +1,7 @@
 import tensorflow as tf
 
+from deeplab.params import IGNORED_CLASS_ID
+
 
 class UpdatedMeanIoU(tf.keras.metrics.MeanIoU):
     def __init__(self,
@@ -12,4 +14,6 @@ class UpdatedMeanIoU(tf.keras.metrics.MeanIoU):
 
     def update_state(self, y_true, y_pred, sample_weight=None):
         y_pred = tf.math.argmax(y_pred, axis=-1)
-        return super().update_state(y_true, y_pred, sample_weight)
+        mask = y_true == IGNORED_CLASS_ID
+        sample_weight = tf.where(mask, 0, 1)
+        return super().update_state(y_true, y_pred, sample_weight=sample_weight)
