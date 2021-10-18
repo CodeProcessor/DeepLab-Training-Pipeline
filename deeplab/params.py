@@ -34,6 +34,8 @@ AUG_PROBABILITY = {
     "gaussian": 0.5,
     "hue": 0.2
 }
+# Buffer size to be used when shuffling with tf.data
+SHUFFLE_BUFFER_SIZE = BATCH_SIZE * 10
 
 # Pascal images
 NUM_TRAIN_IMAGES = -1 if PROD_SYS else 20
