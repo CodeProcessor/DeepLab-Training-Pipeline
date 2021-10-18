@@ -5,10 +5,11 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-from deeplab.augmentation import Augment
+from deeplab.utils import AugmentationWrapper, post_process
 from deeplab.params import (
     IMAGE_SIZE,
     BATCH_SIZE,
+    SHUFFLE_BUFFER_SIZE,
     NUM_TRAIN_IMAGES,
     NUM_VAL_IMAGES,
     USE_TF_RECORDS,
@@ -82,7 +83,8 @@ def data_generator(image_list, mask_list):
     dataset = tf.data.Dataset.from_generator(gen, output_types=(tf.float32, tf.float32)
                                              , output_shapes=(
             (IMAGE_SIZE[0], IMAGE_SIZE[1], 3), (IMAGE_SIZE[0], IMAGE_SIZE[1], 1)))
-    dataset = dataset.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
+    dataset = dataset.shuffle(SHUFFLE_BUFFER_SIZE)
+    dataset = dataset.map(AugmentationWrapper(), num_parallel_calls=tf.data.AUTOTUNE)
     dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
     return dataset
 
@@ -102,19 +104,21 @@ def tfrecord_decode(tf_record):
     image = tf.io.decode_jpeg(sample['image/encoded'], 3)
     mask = tf.io.decode_jpeg(sample['image/segmentation/class/encoded'], 1)
 
-    image = tf.cast(image, tf.float32) * (1. / 127.5) - 1
+    # image = tf.cast(image, tf.float32) * (1. / 127.5) - 1
 
     return image, mask
 
 
-def data_generator_tf_records(record_paths, limit=-1, augmentations=True, batch_size=BATCH_SIZE) -> tf.data.TFRecordDataset:
+def data_generator_tf_records(record_paths, limit=-1, augmentations=True,
+                              batch_size=BATCH_SIZE) -> tf.data.TFRecordDataset:
     ds = tf.data.TFRecordDataset([name for name in record_paths], num_parallel_reads=tf.data.AUTOTUNE) \
         .take(limit) \
+        .shuffle(SHUFFLE_BUFFER_SIZE) \
         .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE) \
-        .map(PreProcess(IMAGE_SIZE), num_parallel_calls=tf.data.AUTOTUNE) \
+        .map(PreProcess(IMAGE_SIZE), num_parallel_calls=tf.data.AUTOTUNE)
 
     if augmentations:
-        ds = ds.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
+        ds = ds.map(AugmentationWrapper(), num_parallel_calls=tf.data.AUTOTUNE)
 
     return ds.batch(batch_size, drop_remainder=True).prefetch(1)
 
@@ -145,7 +149,8 @@ if __name__ == '__main__':
             print(f"Saved: {_name}")
         for i, _image in enumerate(element[0]):
             _name = f"image_{i}.jpg"
-            _image = cv2.cvtColor(_image.numpy(), cv2.COLOR_RGB2BGR)
-            cv2.imwrite(_name, np.uint8((_image + 1) * 127.5))
+            _image = cv2.cvtColor(post_process(_image.numpy()), cv2.COLOR_RGB2BGR)
+            # cv2.imwrite(_name, np.uint8((_image + 1) * 127.5))
+            cv2.imwrite(_name, np.uint8(_image))
             print(f"Saved: {_name}")
         break

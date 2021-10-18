@@ -15,6 +15,7 @@ from deeplab.overlay import plot_predictions, save_cv_image
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, MODEL_PATH, PRED_OUTPUT, LOAD_MODEL
 from deeplab.train import train
 from deeplab.custom_metrics import UpdatedMeanIoU
+from deeplab.utils import post_process
 
 
 def main(is_train):
@@ -44,7 +45,8 @@ def main(is_train):
             os.makedirs(save_folder, exist_ok=True)
             save_cv_image(os.path.join(save_folder, 'mask_' + os.path.basename(image_path)), prediction_colormap)
             save_cv_image(os.path.join(save_folder, 'overlay_' + os.path.basename(image_path)), overlay)
-            save_cv_image(os.path.join(save_folder, 'image_' + os.path.basename(image_path)), (im + 1) * 127.5)
+            save_cv_image(os.path.join(save_folder, 'image_' + os.path.basename(image_path)), post_process(im))
+            # save_cv_image(os.path.join(save_folder, 'image_' + os.path.basename(image_path)), (im + 1) * 127.5)
             print(f"Saved results to - {save_folder}")
 
 

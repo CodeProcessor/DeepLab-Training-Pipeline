@@ -5,6 +5,7 @@
 source: https://keras.io/examples/vision/deeplabv3_plus/
 """
 import ssl
+import math
 
 import tensorflow as tf
 from tensorflow.keras import layers
@@ -32,6 +33,7 @@ def convolution_block(
         padding=padding,
         use_bias=use_bias,
         kernel_initializer=tf.keras.initializers.GlorotNormal(seed=kernel_seed),  # xavier normal initializer
+        kernel_regularizer=tf.keras.regularizers.L2(0.01),
     )(block_input)
     x = layers.BatchNormalization()(x)
     return tf.nn.elu(x)

@@ -7,7 +7,7 @@
 
 PROD_SYS = True
 
-LEARNING_RATE = 5e-6
+LEARNING_RATE = 0.007
 IMAGE_SIZE = (512, 512)
 BATCH_SIZE = 8 if PROD_SYS else 4
 NUM_CLASSES = 22  # use 21 for pascal voc else 20
@@ -15,6 +15,7 @@ IGNORED_CLASS_ID = 21
 
 USE_TF_RECORDS = True
 WEIGHT_DECAY = 0
+BATCHNORM_DECAY = 0.9997
 EPOCHS = 500
 VAL_FREQ = 1
 SAVE_BEST_ONLY = not PROD_SYS
@@ -33,6 +34,8 @@ AUG_PROBABILITY = {
     "gaussian": 0.5,
     "hue": 0.2
 }
+# Buffer size to be used when shuffling with tf.data
+SHUFFLE_BUFFER_SIZE = BATCH_SIZE * 10
 
 # Pascal images
 NUM_TRAIN_IMAGES = -1 if PROD_SYS else 20
