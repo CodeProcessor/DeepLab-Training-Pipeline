@@ -19,7 +19,7 @@ def learning_rate_policy(epoch, max_iteration=EPOCHS, power=0.9):
 
 
 def create_callbacks():
-    lr_callback = LearningRateScheduler(learning_rate_policy)
+    lr_callback = lr_callback = LearningRateScheduler(learning_rate_policy, monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
     # lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
     ckpt_callback = ModelCheckpoint(
         filepath=os.path.join(CKPT_DIR, 'depplabV3plus_epoch-{epoch:02d}_val-loss-{val_loss:.2f}.h5'),
