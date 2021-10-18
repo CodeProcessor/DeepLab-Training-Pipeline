@@ -8,7 +8,7 @@
 import numpy as np
 import cv2
 import tensorflow as tf
-from deeplab.params import IMAGE_SIZE
+from deeplab.params import IMAGE_SIZE, IGNORED_CLASS_ID
 
 
 def flip_image_and_label(image, label):
@@ -29,7 +29,7 @@ def resize_image_and_label(image, label, output_size):
     return image_resized, label_resized
 
 
-def pad_image_and_label(image, label, top, bottom, left, right, pixel_value=0, label_value=0):
+def pad_image_and_label(image, label, top, bottom, left, right, pixel_value=0, label_value=IGNORED_CLASS_ID):
     '''
     https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_core/py_basic_ops/py_basic_ops.html#making-borders-for-images-padding
     '''
@@ -81,7 +81,7 @@ def augment(image, label, output_size=IMAGE_SIZE, min_scale_factor=0.5, max_scal
 
     image, label = pad_image_and_label(image=image, label=label, top=vertical_pad_up, bottom=vertical_pad_down,
                                        left=horizonal_pad_left, right=horizonal_pad_right, pixel_value=0,
-                                       label_value=0)
+                                       label_value=IGNORED_CLASS_ID)
 
     image, label = random_crop(image=image, label=label, output_size=output_size)
 
