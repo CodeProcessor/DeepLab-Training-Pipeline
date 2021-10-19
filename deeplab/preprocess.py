@@ -6,7 +6,7 @@
 """
 import tensorflow as tf
 
-from deeplab.params import IMAGE_SIZE
+from deeplab.params import IMAGE_SIZE, IGNORED_CLASS_ID
 
 
 class PreProcess(tf.keras.layers.Layer):
@@ -22,6 +22,8 @@ class PreProcess(tf.keras.layers.Layer):
                                          tf.constant(PreProcess._MEAN_RGB, dtype=tf.float32))
 
     def call(self, image, label):
+        mask = label != 255
+        label = tf.where(mask, x=label, y=IGNORED_CLASS_ID)
         image = self.resize(image)
         # image = tf.subtract(image, self.rgb_mean)
         if self.backbone == "resnet50":
