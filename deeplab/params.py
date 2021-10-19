@@ -28,7 +28,7 @@ SAVE_BEST_ONLY = not PROD_SYS
 UNIQUE_NAME = "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss"))
 
 # Model loading part
-LOAD_WEIGHTS_MODEL = True
+LOAD_WEIGHTS_MODEL = False
 MODEL_WEIGHTS_PATH = 'output/ckptv2/2021-Oct-19_16h-40m-42s/depplabV3plus_epoch-01_val-loss-37.06.ckpt'
 
 # Augmentation

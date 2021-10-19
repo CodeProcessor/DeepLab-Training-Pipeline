@@ -25,13 +25,14 @@ def main(is_train, content=""):
         if not (BACKBONE in {'xception', 'mobilenetv2', 'resnet50'}):
             raise ValueError('The `backbone` argument should be either '
                              '`xception`, `resnet50` or `mobilenetv2` ')
-
+        print(f"Loading Backbone: {BACKBONE}")
+        time.sleep(0.5)
         if BACKBONE == "resnet50":
             # Custom model
             if LOAD_WEIGHTS_MODEL:
                 deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES,
                                               freeze_backbone=FREEZE_BACKBONE)
-                print("Loading weights: {MODEL_WEIGHTS_PATH}")
+                print(f"Loading weights: {MODEL_WEIGHTS_PATH}")
                 deeplab_model.load_weights(MODEL_WEIGHTS_PATH)
                 print("Weights loaded!")
                 time.sleep(0.5)
@@ -48,7 +49,7 @@ def main(is_train, content=""):
 
         deeplab_model = CompileModel(deeplab_model)
 
-        print(deeplab_model.summary())
+        # print(deeplab_model.summary())
         history = train(deeplab_model)
         get_graphs(history)
     else:
