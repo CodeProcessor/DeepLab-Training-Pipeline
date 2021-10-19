@@ -21,9 +21,10 @@ class PreProcess(tf.keras.layers.Layer):
         self.rgb_mean = tf.math.multiply(tf.ones((IMAGE_SIZE[0], IMAGE_SIZE[1], 3)), tf.constant(PreProcess._MEAN_RGB, dtype=tf.float32))
 
     def call(self, image, label):
+        mask = label != 255
+        label = tf.where(mask, x=label, y=IGNORED_CLASS_ID)
+
         # rescaled_size = tf.shape(label)[:2]
-        # mask = label != 255
-        # label = tf.where(mask, x=label, y=IGNORED_CLASS_ID)
         # min_index = tf.math.argmin(rescaled_size)
         # pad_value = abs(rescaled_size[0] - rescaled_size[1])
         #
