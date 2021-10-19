@@ -4,11 +4,13 @@
 @Author:      dulanj
 @Time:        02/10/2021 19:22
 """
+import sys
 
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
+
 from deeplab.dataset_voc import read_image
 from deeplab.inference import inference
 from deeplab.pascal_voc import VOC_COLORMAP
@@ -39,8 +41,16 @@ def get_overlay(image, colored_mask):
     return overlay
 
 
+def press(event):
+    print('press', event.key)
+    if event.key == "escape":
+        plt.close()
+        sys.exit(0)
+
+
 def plot_samples_matplotlib(display_list, figsize=(5, 3)):
-    _, axes = plt.subplots(nrows=1, ncols=len(display_list), figsize=figsize)
+    fig, axes = plt.subplots(nrows=1, ncols=len(display_list), figsize=figsize)
+    fig.canvas.mpl_connect('key_press_event', press)
     for i in range(len(display_list)):
         if display_list[i].shape[-1] == 3:
             axes[i].imshow(tf.keras.preprocessing.image.array_to_img(display_list[i]))
@@ -62,6 +72,7 @@ def plot_predictions(images_list, model):
         )
         pred_list.append(predict_image_list)
     return pred_list
+
 
 def save_cv_image(save_path, image):
     cv2.imwrite(save_path, cv2.cvtColor(image.astype(np.uint8), cv2.COLOR_RGB2BGR))
