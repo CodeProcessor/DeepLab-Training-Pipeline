@@ -29,7 +29,7 @@ UNIQUE_NAME = "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss"))
 
 # Model loading part
 LOAD_WEIGHTS_MODEL = True
-MODEL_WEIGHTS_PATH = '/content/gdrive/MyDrive/ckpt/2021-Oct-19_14h-09m-00s/depplabV3plus_epoch-20_val-loss-4.52.ckpt'
+MODEL_WEIGHTS_PATH = '/content/gdrive/MyDrive/ckpt/2021-Oct-19_16h-34m-27s/depplabV3plus_epoch-18_val-loss-3.93.ckpt'
 
 # Augmentation
 # set probability negative to disable
