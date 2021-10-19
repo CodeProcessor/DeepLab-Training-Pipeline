@@ -45,7 +45,8 @@ def create_callbacks():
     create_dir(_ckpt_dir)
     write_model_info()
     ckpt_callback = ModelCheckpoint(
-        filepath=os.path.join(_ckpt_dir, 'depplabV3plus_epoch-{epoch:02d}_val-loss-{val_loss:.2f}.h5'),
+        filepath=os.path.join(_ckpt_dir, 'depplabV3plus_epoch-{epoch:02d}_val-loss-{val_loss:.2f}.ckpt'),
+        save_weights_only=True,
         monitor='val_loss', mode='min', save_best_only=SAVE_BEST_ONLY
     )
     tb_callback = TensorBoard(log_dir=os.path.join(TENSORBOARD_DIR, UNIQUE_NAME))

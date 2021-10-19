@@ -27,8 +27,8 @@ SAVE_BEST_ONLY = not PROD_SYS
 UNIQUE_NAME = "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss"))
 
 # Model loading part
-LOAD_MODEL = False
-MODEL_PATH = 'ckpt/depplabV3plus_epoch-457_val-loss-1.50.h5'
+LOAD_WEIGHTS_MODEL = True
+MODEL_WEIGHTS_PATH = 'output/ckptv2/2021-Oct-19_16h-40m-42s/depplabV3plus_epoch-01_val-loss-37.06.ckpt'
 
 # Augmentation
 # set probability negative to disable
