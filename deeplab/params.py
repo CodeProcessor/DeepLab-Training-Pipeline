@@ -22,14 +22,14 @@ INITIAL_WEIGHTS = True
 USE_TF_RECORDS = True
 WEIGHT_DECAY = 0
 BATCHNORM_DECAY = 0.9997
-EPOCHS = 500
+EPOCHS = 20
 VAL_FREQ = 1
 SAVE_BEST_ONLY = not PROD_SYS
 UNIQUE_NAME = "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss"))
 
 # Model loading part
 LOAD_WEIGHTS_MODEL = True
-MODEL_WEIGHTS_PATH = '/content/gdrive/MyDrive/ckpt/2021-Oct-19_11h-58m-48s/depplabV3plus_epoch-12_val-loss-10.73.ckpt'
+MODEL_WEIGHTS_PATH = '/content/gdrive/MyDrive/ckpt/2021-Oct-19_14h-09m-00s/depplabV3plus_epoch-20_val-loss-4.52.ckpt'
 
 # Augmentation
 # set probability negative to disable
