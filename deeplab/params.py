@@ -13,6 +13,7 @@ BATCH_SIZE = 8 if PROD_SYS else 4
 NUM_CLASSES = 22  # use 21 for pascal voc else 20
 IGNORED_CLASS_ID = 21
 
+BACKBONE = "mobilenetv2"  # mobilenetv2, xception
 USE_TF_RECORDS = True
 WEIGHT_DECAY = 0
 BATCHNORM_DECAY = 0.9997

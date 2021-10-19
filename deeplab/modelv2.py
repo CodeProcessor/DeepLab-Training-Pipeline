@@ -20,20 +20,20 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-from tensorflow.python.keras import layers
-from tensorflow.python.keras.applications.imagenet_utils import preprocess_input
-from tensorflow.python.keras.layers import Activation
-from tensorflow.python.keras.layers import Add
-from tensorflow.python.keras.layers import BatchNormalization
-from tensorflow.python.keras.layers import Concatenate
-from tensorflow.python.keras.layers import Conv2D
-from tensorflow.python.keras.layers import DepthwiseConv2D
-from tensorflow.python.keras.layers import Dropout
-from tensorflow.python.keras.layers import GlobalAveragePooling2D
-from tensorflow.python.keras.layers import Input
-from tensorflow.python.keras.layers import Reshape
-from tensorflow.python.keras.layers import ZeroPadding2D
-from tensorflow.python.keras.models import Model
+from tensorflow.keras import layers
+from tensorflow.keras.applications.imagenet_utils import preprocess_input
+from tensorflow.keras.layers import Activation
+from tensorflow.keras.layers import Add
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.layers import Concatenate
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import DepthwiseConv2D
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.layers import GlobalAveragePooling2D
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Reshape
+from tensorflow.keras.layers import ZeroPadding2D
+from tensorflow.keras.models import Model
 from tensorflow.python.keras.utils.data_utils import get_file
 from tensorflow.python.keras.utils.layer_utils import get_source_inputs
 
@@ -165,7 +165,7 @@ def _make_divisible(v, divisor, min_value=None):
 
 
 def _inverted_res_block(inputs, expansion, stride, alpha, filters, block_id, skip_connection, rate=1):
-    in_channels = inputs.shape[-1].value  # inputs._keras_shape[-1]
+    in_channels = inputs.shape[-1]  # .value  # inputs._keras_shape[-1]
     pointwise_conv_filters = int(filters * alpha)
     pointwise_filters = _make_divisible(pointwise_conv_filters, 8)
     x = inputs
