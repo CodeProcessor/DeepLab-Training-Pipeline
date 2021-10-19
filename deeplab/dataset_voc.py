@@ -153,8 +153,7 @@ if __name__ == '__main__':
             print(f"Saved: {_name}")
         for i, _image in enumerate(element[0]):
             _name = f"image_{i}.jpg"
-            _image = cv2.cvtColor(post_process(_image.numpy()), cv2.COLOR_RGB2BGR)
-            # cv2.imwrite(_name, np.uint8((_image + 1) * 127.5))
+            _image = cv2.cvtColor(post_process(cv2.cvtColor(_image.numpy(), cv2.COLOR_BGR2RGB)), cv2.COLOR_RGB2BGR)
             cv2.imwrite(_name, np.uint8(_image))
             print(f"Saved: {_name}")
         break

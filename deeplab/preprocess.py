@@ -6,7 +6,6 @@
 """
 import tensorflow as tf
 
-from deeplab.params import IGNORED_CLASS_ID
 from deeplab.params import IMAGE_SIZE
 
 
@@ -23,29 +22,6 @@ class PreProcess(tf.keras.layers.Layer):
                                          tf.constant(PreProcess._MEAN_RGB, dtype=tf.float32))
 
     def call(self, image, label):
-        rescaled_size = tf.shape(label)[:2]
-        mask = label != 255
-        label = tf.where(mask, x=label, y=IGNORED_CLASS_ID)
-        min_index = tf.math.argmin(rescaled_size)
-        pad_value = abs(rescaled_size[0] - rescaled_size[1])
-
-        vertical_pad_up = 0
-        vertical_pad_down = 0
-        horizontal_pad_right = 0
-        horizontal_pad_left = 0
-
-        if min_index == 0:
-            vertical_pad_up = pad_value // 2
-            vertical_pad_down = pad_value - vertical_pad_up
-        else:
-            horizontal_pad_left = pad_value // 2
-            horizontal_pad_right = pad_value - horizontal_pad_left
-
-        padding = [[vertical_pad_up, vertical_pad_down], [horizontal_pad_left, horizontal_pad_right], [0, 0]]
-        # padding_label = [[vertical_pad_up, vertical_pad_down], [horizontal_pad_left, horizontal_pad_right], [0, 0]]
-        image = tf.pad(image, padding, "CONSTANT", constant_values=0)
-        label = tf.pad(label, padding, "CONSTANT", constant_values=0)
-
         image = self.resize(image)
         # image = tf.subtract(image, self.rgb_mean)
         if self.backbone == "resnet50":
