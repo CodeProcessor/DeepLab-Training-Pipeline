@@ -5,6 +5,7 @@
 source: https://keras.io/examples/vision/deeplabv3_plus/
 """
 import ssl
+import time
 
 import tensorflow as tf
 from tensorflow.keras import layers
@@ -54,13 +55,15 @@ def DilatedSpatialPyramidPooling(dspp_input):
     return output
 
 
-def DeeplabV3Plus(image_size, num_classes, base_freeze=False) -> tf.keras.Model:
+def DeeplabV3Plus(image_size, num_classes, freeze_backbone=False) -> tf.keras.Model:
     model_input = tf.keras.Input(shape=(image_size[0], image_size[1], 3))
     resnet50 = tf.keras.applications.ResNet50(
         weights="imagenet", include_top=False, input_tensor=model_input
     )
-    if base_freeze:
+    if freeze_backbone:
         resnet50.trainable = False
+        print("Backbone set to trainable False")
+        time.sleep(0.5)
     x = resnet50.get_layer("conv4_block6_2_relu").output
     x = DilatedSpatialPyramidPooling(x)
 

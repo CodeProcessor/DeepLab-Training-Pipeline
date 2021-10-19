@@ -14,7 +14,7 @@ from deeplab.model import DeeplabV3Plus, CompileModel, load_model
 from deeplab.modelv2 import Deeplabv3
 from deeplab.overlay import plot_predictions, save_cv_image
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, MODEL_WEIGHTS_PATH, PRED_OUTPUT, LOAD_WEIGHTS_MODEL, BACKBONE, \
-    INITIAL_WEIGHTS
+    INITIAL_WEIGHTS, FREEZE_BACKBONE
 from deeplab.train import train, write_model_info
 from deeplab.utils import post_process
 
@@ -29,13 +29,15 @@ def main(is_train, content=""):
         if BACKBONE == "resnet50":
             # Custom model
             if LOAD_WEIGHTS_MODEL:
-                deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
+                deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES,
+                                              freeze_backbone=FREEZE_BACKBONE)
                 print("Loading weights: {MODEL_WEIGHTS_PATH}")
                 deeplab_model.load_weights(MODEL_WEIGHTS_PATH)
                 print("Weights loaded!")
                 time.sleep(0.5)
             else:
-                deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
+                deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES,
+                                              freeze_backbone=FREEZE_BACKBONE)
         else:
             if LOAD_WEIGHTS_MODEL:
                 deeplab_model = load_model(MODEL_WEIGHTS_PATH)
