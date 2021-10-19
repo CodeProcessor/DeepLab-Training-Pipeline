@@ -12,7 +12,7 @@ from deeplab.params import (
     NUM_TRAIN_IMAGES,
     NUM_VAL_IMAGES,
     USE_TF_RECORDS,
-    DATASET_DIR, train_txt_file_voc, val_txt_file_voc, TF_RECORDS_DIR
+    DATASET_DIR, train_txt_file_voc, val_txt_file_voc, TF_RECORDS_DIR, BACKBONE
 )
 from deeplab.pascal_voc import VOC_COLORMAP
 from deeplab.preprocess import PreProcess
@@ -109,13 +109,13 @@ def tfrecord_decode(tf_record):
     return image, mask
 
 
-def data_generator_tf_records(record_paths, limit=-1, augmentations=True,
+def data_generator_tf_records(record_paths, limit=-1, augmentations=True, backbone="resnet50",
                               batch_size=BATCH_SIZE) -> tf.data.TFRecordDataset:
     ds = tf.data.TFRecordDataset([name for name in record_paths], num_parallel_reads=tf.data.AUTOTUNE) \
         .take(limit) \
         .shuffle(SHUFFLE_BUFFER_SIZE) \
         .map(tfrecord_decode, num_parallel_calls=tf.data.AUTOTUNE) \
-        .map(PreProcess(IMAGE_SIZE), num_parallel_calls=tf.data.AUTOTUNE)
+        .map(PreProcess(IMAGE_SIZE, backbone), num_parallel_calls=tf.data.AUTOTUNE)
 
     if augmentations:
         ds = ds.map(AugmentationWrapper(), num_parallel_calls=tf.data.AUTOTUNE)
@@ -130,8 +130,8 @@ def load_dataset():
         print(f"Validation records: {val}")
         if len(val) == 0 or len(train) == 0:
             raise "Train or Val records cannot be empty"
-        train_dataset = data_generator_tf_records(train, limit=NUM_TRAIN_IMAGES)
-        val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES, augmentations=False)
+        train_dataset = data_generator_tf_records(train, limit=NUM_TRAIN_IMAGES, backbone=BACKBONE)
+        val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES, backbone=BACKBONE, augmentations=False)
     else:
         train_images, train_masks, val_images, val_masks = _get_image_lists()
         train_dataset = data_generator(train_images, train_masks)
