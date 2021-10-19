@@ -8,21 +8,31 @@
 import os
 from datetime import datetime
 
+from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint, TensorBoard, EarlyStopping
+
 from deeplab.dataset_voc import load_dataset
 from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR, VAL_FREQ, SAVE_BEST_ONLY
-from tensorflow.keras.callbacks import LearningRateScheduler, ReduceLROnPlateau, ModelCheckpoint, TensorBoard, EarlyStopping
+
+today = datetime.now()
+
+
+def create_dir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 
 # learning rate schedule
 def learning_rate_policy(epoch, lr, max_iteration=EPOCHS, power=0.9):
-    return lr*(1 - epoch / max_iteration) ** power
+    return lr * (1 - epoch / max_iteration) ** power
 
 
 def create_callbacks():
     lr_callback = LearningRateScheduler(learning_rate_policy)
     # lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
+    _ckpt_dir = os.path.join(CKPT_DIR, "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss")))
+    create_dir(_ckpt_dir)
     ckpt_callback = ModelCheckpoint(
-        filepath=os.path.join(CKPT_DIR, 'depplabV3plus_epoch-{epoch:02d}_val-loss-{val_loss:.2f}.h5'),
+        filepath=os.path.join(_ckpt_dir, 'depplabV3plus_epoch-{epoch:02d}_val-loss-{val_loss:.2f}.h5'),
         monitor='val_loss', mode='min', save_best_only=SAVE_BEST_ONLY
     )
     tb_callback = TensorBoard(log_dir=os.path.join(TENSORBOARD_DIR, datetime.now().strftime("%Y%m%d-%H%M%S")))
