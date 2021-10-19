@@ -4,11 +4,13 @@
 @Author:      https://github.com/leimao/DeepLab-V3, teharaf
 @Time:        17/10/2021 19:22
 """
+import random
 
-import numpy as np
 import cv2
+import numpy as np
 import tensorflow as tf
-from deeplab.params import IMAGE_SIZE, IGNORED_CLASS_ID
+
+from deeplab.params import IMAGE_SIZE, IGNORED_CLASS_ID, AUG_PROBABILITY
 
 
 def flip_image_and_label(image, label):
@@ -55,6 +57,48 @@ def random_crop(image, label, output_size):
     return image_cropped, label_cropped
 
 
+def intensity_aug(image):
+    # This is not used
+
+    # Blur
+    if np.random.random() < AUG_PROBABILITY["gaussian"]:
+        image = cv2.blur(src=image, ksize=(3, 3))
+
+    # Brightness
+    def brightness(img, val):
+        value = random.random() * val
+        hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+        hsv = np.array(hsv, dtype=np.float64)
+        # hsv[:, :, 1] = hsv[:, :, 1] + value
+        # hsv[:, :, 1][hsv[:, :, 1] > 127] = 127
+        hsv[:, :, 2] = hsv[:, :, 2] + value
+        hsv[:, :, 2][hsv[:, :, 2] > 127] = 127
+        hsv = np.array(hsv, dtype=np.uint8)
+        img = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        return img
+
+    if np.random.random() < AUG_PROBABILITY["brightness"]:
+        image = brightness(image, 30)
+
+    # Hue
+    def hue(img, val):
+        value = random.random() * val
+        hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+        hsv = np.array(hsv, dtype=np.float64)
+        _c = 2
+        hsv[:, :, _c] = hsv[:, :, _c] + value
+        _cond = hsv[:, :, 1] > 127
+        hsv[:, :, _c][_cond] = hsv[:, :, _c][_cond] % 127
+        hsv = np.array(hsv, dtype=np.uint8)
+        img = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        return img
+
+    if np.random.random() < AUG_PROBABILITY["hue"]:
+        image = hue(image, 1)
+
+    return image
+
+
 def augment(image, label, output_size=IMAGE_SIZE, min_scale_factor=0.5, max_scale_factor=2.0):
     original_height = image.shape[0]
     original_width = image.shape[1]
@@ -86,7 +130,7 @@ def augment(image, label, output_size=IMAGE_SIZE, min_scale_factor=0.5, max_scal
     image, label = random_crop(image=image, label=label, output_size=output_size)
 
     # Flip image and label
-    if np.random.random() < 0.5:
+    if np.random.random() < AUG_PROBABILITY["flip"]:
         image, label = flip_image_and_label(image=image, label=label)
 
     label = np.expand_dims(label, axis=2)
