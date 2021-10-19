@@ -29,13 +29,14 @@ def learning_rate_policy(epoch, lr, max_iteration=EPOCHS, power=0.9):
 def create_callbacks():
     lr_callback = LearningRateScheduler(learning_rate_policy)
     # lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
-    _ckpt_dir = os.path.join(CKPT_DIR, "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss")))
+    _datetime_name = "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss"))
+    _ckpt_dir = os.path.join(CKPT_DIR, _datetime_name)
     create_dir(_ckpt_dir)
     ckpt_callback = ModelCheckpoint(
         filepath=os.path.join(_ckpt_dir, 'depplabV3plus_epoch-{epoch:02d}_val-loss-{val_loss:.2f}.h5'),
         monitor='val_loss', mode='min', save_best_only=SAVE_BEST_ONLY
     )
-    tb_callback = TensorBoard(log_dir=os.path.join(TENSORBOARD_DIR, datetime.now().strftime("%Y%m%d-%H%M%S")))
+    tb_callback = TensorBoard(log_dir=os.path.join(TENSORBOARD_DIR, _datetime_name))
     es_callback = EarlyStopping(patience=10)
     return [lr_callback, ckpt_callback, tb_callback]
 
