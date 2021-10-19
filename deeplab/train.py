@@ -11,7 +11,8 @@ from datetime import datetime
 from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint, TensorBoard, EarlyStopping
 
 from deeplab.dataset_voc import load_dataset
-from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR, VAL_FREQ, SAVE_BEST_ONLY, BACKBONE, IMAGE_SIZE
+from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR, VAL_FREQ, SAVE_BEST_ONLY, BACKBONE, IMAGE_SIZE, \
+    LEARNING_RATE, AUG_PROBABILITY
 
 today = datetime.now()
 
@@ -22,8 +23,8 @@ def create_dir(path):
 
 
 def write_model_info(path):
-    content = f"Backbone: {BACKBONE}\n" \
-              f"Resolution: {IMAGE_SIZE}"
+    content = f"Backbone: {BACKBONE}\nLR: {LEARNING_RATE}\n" \
+              f"Resolution: {IMAGE_SIZE}\nAugmentations: {AUG_PROBABILITY}"
 
     with open(os.path.join(path, 'info.txt'), 'w') as fp:
         fp.write(content)
