@@ -14,11 +14,12 @@ from deeplab.model import DeeplabV3Plus, CompileModel, load_model
 from deeplab.modelv2 import Deeplabv3
 from deeplab.overlay import plot_predictions, save_cv_image
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, MODEL_PATH, PRED_OUTPUT, LOAD_MODEL, BACKBONE
-from deeplab.train import train
+from deeplab.train import train, write_model_info
 from deeplab.utils import post_process
 
 
-def main(is_train):
+def main(is_train, content=""):
+    write_model_info(content)
     if is_train:
         if not (BACKBONE in {'xception', 'mobilenetv2', 'resnet50'}):
             raise ValueError('The `backbone` argument should be either '
@@ -64,9 +65,10 @@ def main(is_train):
 def create_argparse():
     parser = argparse.ArgumentParser()
     parser.add_argument('--train', help='Enable if training', action='store_true')
+    parser.add_argument('--info', help='Information about the model', type=str, default="")
 
     args = parser.parse_args()
-    main(args.train)
+    main(args.train, args.info)
 
 
 if __name__ == '__main__':

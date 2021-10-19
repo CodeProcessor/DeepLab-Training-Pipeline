@@ -4,6 +4,9 @@
 @Author:      sgx team
 @Time:        02/10/2021 00:03
 """
+from datetime import datetime
+
+today = datetime.now()
 
 PROD_SYS = True
 
@@ -20,6 +23,7 @@ BATCHNORM_DECAY = 0.9997
 EPOCHS = 500
 VAL_FREQ = 1
 SAVE_BEST_ONLY = not PROD_SYS
+UNIQUE_NAME = "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss"))
 
 # Model loading part
 LOAD_MODEL = False
