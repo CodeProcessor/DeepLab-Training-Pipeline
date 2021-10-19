@@ -17,19 +17,19 @@ NUM_CLASSES = 22  # use 21 for pascal voc else 20
 IGNORED_CLASS_ID = 21
 
 BACKBONE = "resnet50"  # mobilenetv2, xception, resnet50
-FREEZE_BACKBONE = True
+FREEZE_BACKBONE = False
 INITIAL_WEIGHTS = True
 USE_TF_RECORDS = True
 WEIGHT_DECAY = 0
 BATCHNORM_DECAY = 0.9997
-EPOCHS = 20
+EPOCHS = 50
 VAL_FREQ = 1
 SAVE_BEST_ONLY = not PROD_SYS
 UNIQUE_NAME = "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss"))
 
 # Model loading part
 LOAD_WEIGHTS_MODEL = True
-MODEL_WEIGHTS_PATH = '/content/gdrive/MyDrive/ckpt/2021-Oct-19_16h-34m-27s/depplabV3plus_epoch-18_val-loss-3.93.ckpt'
+MODEL_WEIGHTS_PATH = '/content/gdrive/MyDrive/ckpt/2021-Oct-19_18h-47m-56s/depplabV3plus_epoch-02_val-loss-3.95.ckpt'
 
 # Augmentation
 # set probability negative to disable
