@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-from deeplab.utils import AugmentationWrapper, post_process
 from deeplab.params import (
     IMAGE_SIZE,
     BATCH_SIZE,
@@ -13,10 +12,11 @@ from deeplab.params import (
     NUM_TRAIN_IMAGES,
     NUM_VAL_IMAGES,
     USE_TF_RECORDS,
-    DATASET_DIR, train_txt_file_voc, val_txt_file_voc, TF_RECORDS_DIR, PREFETCH_LIMIT
+    DATASET_DIR, train_txt_file_voc, val_txt_file_voc, TF_RECORDS_DIR
 )
 from deeplab.pascal_voc import VOC_COLORMAP
 from deeplab.preprocess import PreProcess
+from deeplab.utils import AugmentationWrapper, post_process
 
 
 def _get_image_list_from_file(filename):
@@ -126,6 +126,10 @@ def data_generator_tf_records(record_paths, limit=-1, augmentations=True,
 def load_dataset():
     if USE_TF_RECORDS:
         train, val = _get_tfrecord_paths_train_val()
+        print(f"Training records: {train}")
+        print(f"Validation records: {val}")
+        if len(val) == 0 or len(train) == 0:
+            raise "Train or Val records cannot be empty"
         train_dataset = data_generator_tf_records(train, limit=NUM_TRAIN_IMAGES)
         val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES, augmentations=False)
     else:
