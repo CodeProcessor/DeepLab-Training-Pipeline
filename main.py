@@ -13,7 +13,7 @@ from deeplab.graph_viz import get_graphs
 from deeplab.model import DeeplabV3Plus, CompileModel, load_model
 from deeplab.modelv2 import Deeplabv3
 from deeplab.overlay import plot_predictions, save_cv_image
-from deeplab.params import IMAGE_SIZE, NUM_CLASSES, MODEL_PATH, PRED_OUTPUT, LOAD_MODEL, BACKBONE
+from deeplab.params import IMAGE_SIZE, NUM_CLASSES, MODEL_PATH, PRED_OUTPUT, LOAD_MODEL, BACKBONE, INITIAL_WEIGHTS
 from deeplab.train import train, write_model_info
 from deeplab.utils import post_process
 
@@ -35,8 +35,9 @@ def main(is_train, content=""):
             if LOAD_MODEL:
                 deeplab_model = load_model(MODEL_PATH)
             else:
+                _weights = "pascal_voc" if INITIAL_WEIGHTS else None
                 deeplab_model = Deeplabv3(input_shape=(IMAGE_SIZE[0], IMAGE_SIZE[1], 3), classes=NUM_CLASSES,
-                                          backbone=BACKBONE)
+                                          backbone=BACKBONE, weights=_weights)
 
         deeplab_model = CompileModel(deeplab_model)
 
