@@ -11,7 +11,7 @@ from datetime import datetime
 from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint, TensorBoard, EarlyStopping
 
 from deeplab.dataset_voc import load_dataset
-from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR, VAL_FREQ, SAVE_BEST_ONLY
+from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR, VAL_FREQ, SAVE_BEST_ONLY, BACKBONE, IMAGE_SIZE
 
 today = datetime.now()
 
@@ -19,6 +19,14 @@ today = datetime.now()
 def create_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
+
+
+def write_model_info(path):
+    content = f"Backbone: {BACKBONE}\n" \
+              f"Resolution: {IMAGE_SIZE}"
+
+    with open(os.path.join(path, 'info.txt'), 'w') as fp:
+        fp.write(content)
 
 
 # learning rate schedule
@@ -32,6 +40,7 @@ def create_callbacks():
     _datetime_name = "{}".format(today.strftime("%Y-%b-%d_%Hh-%Mm-%Ss"))
     _ckpt_dir = os.path.join(CKPT_DIR, _datetime_name)
     create_dir(_ckpt_dir)
+    write_model_info(_ckpt_dir)
     ckpt_callback = ModelCheckpoint(
         filepath=os.path.join(_ckpt_dir, 'depplabV3plus_epoch-{epoch:02d}_val-loss-{val_loss:.2f}.h5'),
         monitor='val_loss', mode='min', save_best_only=SAVE_BEST_ONLY
