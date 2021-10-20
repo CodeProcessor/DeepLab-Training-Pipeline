@@ -30,7 +30,7 @@ class PreProcess(tf.keras.layers.Layer):
     def call(self, image, label):
         mask = label != 255
         label = tf.where(mask, x=label, y=IGNORED_CLASS_ID)
-        image = self.resize(image)
+        image = tf.cast(self.resize(image), tf.float32)
 
         """
         Image(inputs) only augmentations (pixel-wise)
@@ -49,5 +49,6 @@ class PreProcess(tf.keras.layers.Layer):
         # else:
         #     raise "Unknown backbone"
         label = self.resize(label)
+        label = tf.cast(self.resize(label), tf.float32)
 
         return image, label
