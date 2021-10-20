@@ -4,7 +4,6 @@
 @Author:      dulanj
 @Time:        07/10/2021 20:49
 """
-import random
 
 import tensorflow as tf
 import tensorflow_addons as tfa
@@ -36,19 +35,19 @@ class PreProcess(tf.keras.layers.Layer):
         """
         Image(inputs) only augmentations (pixel-wise)
         """
-        for _aug, _prob in [self.hue, self.gau2d]:
-            if random.random() < _prob:
-                image = _aug(image)
+        # for _aug, _prob in [self.hue, self.gau2d]:
+        #     if random.random() < _prob:
+        #         image = _aug(image)
 
-        # image = tf.subtract(image, self.rgb_mean)
-        if self.backbone == "resnet50":
-            image = tf.keras.applications.resnet50.preprocess_input(image)
-        elif self.backbone == "xception":
-            image = tf.keras.applications.xception.preprocess_input(image)
-        elif self.backbone == "mobilenetv2":
-            image = tf.keras.applications.mobilenet_v2.preprocess_input(image)
-        else:
-            raise "Unknown backbone"
+        image = tf.subtract(image, self.rgb_mean)
+        # if self.backbone == "resnet50":
+        #     image = tf.keras.applications.resnet50.preprocess_input(image)
+        # elif self.backbone == "xception":
+        #     image = tf.keras.applications.xception.preprocess_input(image)
+        # elif self.backbone == "mobilenetv2":
+        #     image = tf.keras.applications.mobilenet_v2.preprocess_input(image)
+        # else:
+        #     raise "Unknown backbone"
         label = self.resize(label)
 
         return image, label
