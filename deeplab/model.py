@@ -33,7 +33,7 @@ def convolution_block(
         padding=padding,
         use_bias=use_bias,
         kernel_initializer=tf.keras.initializers.GlorotNormal(seed=kernel_seed),  # xavier normal initializer
-        kernel_regularizer=tf.keras.regularizers.L2(0.01),
+        # kernel_regularizer=tf.keras.regularizers.L2(0.01),
     )(block_input)
     x = layers.BatchNormalization()(x)
     return tf.nn.elu(x)
