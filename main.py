@@ -10,7 +10,7 @@ import time
 from glob import glob
 
 from deeplab.graph_viz import get_graphs
-from deeplab.model import DeeplabV3Plus, CompileModel, load_model
+from deeplab.model import DeeplabV3Plus, CompileModel
 from deeplab.modelv2 import Deeplabv3
 from deeplab.overlay import plot_predictions, save_cv_image
 from deeplab.params import IMAGE_SIZE, NUM_CLASSES, MODEL_WEIGHTS_PATH, PRED_OUTPUT, LOAD_WEIGHTS_MODEL, BACKBONE, \
@@ -29,23 +29,17 @@ def main(is_train, content=""):
         time.sleep(0.5)
         if BACKBONE == "resnet50":
             # Custom model
-            if LOAD_WEIGHTS_MODEL:
-                deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES,
-                                              freeze_backbone=FREEZE_BACKBONE)
-                print(f"Loading weights: {MODEL_WEIGHTS_PATH}")
-                deeplab_model.load_weights(MODEL_WEIGHTS_PATH)
-                print("Weights loaded!")
-                time.sleep(0.5)
-            else:
-                deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES,
-                                              freeze_backbone=FREEZE_BACKBONE)
+            deeplab_model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES,
+                                          freeze_backbone=FREEZE_BACKBONE)
         else:
-            if LOAD_WEIGHTS_MODEL:
-                deeplab_model = load_model(MODEL_WEIGHTS_PATH)
-            else:
-                _weights = "pascal_voc" if INITIAL_WEIGHTS else None
-                deeplab_model = Deeplabv3(input_shape=(IMAGE_SIZE[0], IMAGE_SIZE[1], 3), classes=NUM_CLASSES,
-                                          backbone=BACKBONE, weights=_weights)
+            _weights = "pascal_voc" if INITIAL_WEIGHTS else None
+            deeplab_model = Deeplabv3(input_shape=(IMAGE_SIZE[0], IMAGE_SIZE[1], 3), classes=NUM_CLASSES,
+                                      backbone=BACKBONE, weights=_weights)
+        if LOAD_WEIGHTS_MODEL:
+            print(f"Loading weights: {MODEL_WEIGHTS_PATH}")
+            deeplab_model.load_weights(MODEL_WEIGHTS_PATH)
+            print("Weights loaded!")
+            time.sleep(0.5)
 
         deeplab_model = CompileModel(deeplab_model)
 
