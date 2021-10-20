@@ -41,7 +41,7 @@ def learning_rate_policy(epoch, lr, max_iteration=EPOCHS, power=0.9):
 
 def create_callbacks():
     # lr_callback = LearningRateScheduler(learning_rate_policy)
-    lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
+    lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.5, patience=5, min_lr=1e-8)
     _ckpt_dir = os.path.join(CKPT_DIR, UNIQUE_NAME)
     create_dir(_ckpt_dir)
     write_model_info()
