@@ -19,7 +19,7 @@ class PreProcess(tf.keras.layers.Layer):
         self.target_height = output_shape[0]
         self.target_width = output_shape[1]
         self.backbone = backbone
-        self.resize = tf.keras.layers.Resizing(height=self.target_height, width=self.target_width)
+        self.resize = tf.keras.layers.Resizing(height=self.target_height, width=self.target_width, interpolation='nearest')
         self.rgb_mean = tf.math.multiply(tf.ones((IMAGE_SIZE[0], IMAGE_SIZE[1], 3)),
                                          tf.constant(PreProcess._MEAN_RGB, dtype=tf.float32))
 

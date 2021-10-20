@@ -130,7 +130,7 @@ def load_dataset():
         print(f"Training records: {train}")
         print(f"Validation records: {val}")
         if len(val) == 0 or len(train) == 0:
-            raise "Train or Val records cannot be empty"
+            raise Exception("Train or Val records cannot be empty")
         train_dataset = data_generator_tf_records(train, limit=NUM_TRAIN_IMAGES, backbone=BACKBONE)
         val_dataset = data_generator_tf_records(val, limit=NUM_VAL_IMAGES, backbone=BACKBONE, augmentations=False)
     else:
@@ -154,7 +154,8 @@ if __name__ == '__main__':
             print(f"Saved: {_name}")
         for i, _image in enumerate(element[0]):
             _name = f"image_{i}.jpg"
-            _image = cv2.cvtColor(post_process(cv2.cvtColor(_image.numpy(), cv2.COLOR_BGR2RGB)), cv2.COLOR_RGB2BGR)
+            _image = cv2.cvtColor(post_process(_image.numpy()), cv2.COLOR_RGB2BGR)
+            # _image = cv2.cvtColor(post_process(cv2.cvtColor(_image.numpy(), cv2.COLOR_BGR2RGB)), cv2.COLOR_RGB2BGR)
             cv2.imwrite(_name, np.uint8(_image))
             print(f"Saved: {_name}")
         break
