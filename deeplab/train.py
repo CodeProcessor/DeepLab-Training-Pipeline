@@ -8,7 +8,8 @@
 import os
 from datetime import datetime
 
-from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint, TensorBoard, EarlyStopping
+from keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
 
 from deeplab.dataset_voc import load_dataset
 from deeplab.params import EPOCHS, CKPT_DIR, TENSORBOARD_DIR, VAL_FREQ, SAVE_BEST_ONLY, BACKBONE, IMAGE_SIZE, \
@@ -39,8 +40,8 @@ def learning_rate_policy(epoch, lr, max_iteration=EPOCHS, power=0.9):
 
 
 def create_callbacks():
-    lr_callback = LearningRateScheduler(learning_rate_policy)
-    # lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
+    # lr_callback = LearningRateScheduler(learning_rate_policy)
+    lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
     _ckpt_dir = os.path.join(CKPT_DIR, UNIQUE_NAME)
     create_dir(_ckpt_dir)
     write_model_info()
