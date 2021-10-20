@@ -38,9 +38,9 @@ AUG_PROBABILITY = {
     "rotate": -1,
     "trans": 0.7,
     "scale": 0.7,
-    "gaussian": 0.5,
-    "brightness": 1,
-    "hue": 0.5
+    "gaussian": -1,
+    "brightness": -1,
+    "hue": -1
 }
 # Buffer size to be used when shuffling with tf.data
 SHUFFLE_BUFFER_SIZE = BATCH_SIZE * 10

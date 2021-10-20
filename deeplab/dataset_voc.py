@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
+from deeplab.augmentation import Augment
 from deeplab.params import (
     IMAGE_SIZE,
     BATCH_SIZE,
@@ -118,7 +119,7 @@ def data_generator_tf_records(record_paths, limit=-1, augmentations=True, backbo
         .map(PreProcess(IMAGE_SIZE, backbone), num_parallel_calls=tf.data.AUTOTUNE)
 
     if augmentations:
-        ds = ds.map(AugmentationWrapper(), num_parallel_calls=tf.data.AUTOTUNE)
+        ds = ds.map(Augment(), num_parallel_calls=tf.data.AUTOTUNE)
 
     return ds.batch(batch_size, drop_remainder=True).prefetch(1)
 
