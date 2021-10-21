@@ -64,7 +64,7 @@ def hist_plot(image, label):
 
 
 def plot_wrapper(image, label):
-    tf.numpy_function(func=plot, inp=(image, label), Tout=())
+    tf.numpy_function(func=hist_plot, inp=(image, label), Tout=())
     return image, label
 
 def intensity_aug(image):
