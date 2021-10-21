@@ -10,7 +10,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-from deeplab.params import IMAGE_SIZE, IGNORED_CLASS_ID, AUG_PROBABILITY
+from deeplab.params import IMAGE_SIZE, IGNORED_CLASS_ID, AUG_PROBABILITY, NUM_CLASSES
 
 
 def flip_image_and_label(image, label):
@@ -56,6 +56,16 @@ def random_crop(image, label, output_size):
 
     return image_cropped, label_cropped
 
+
+def hist_plot(image, label):
+    import matplotlib.pyplot as plt
+    plt.hist(label.ravel(), log=True, bins=range(NUM_CLASSES))
+    plt.show()
+
+
+def plot_wrapper(image, label):
+    tf.numpy_function(func=plot, inp=(image, label), Tout=())
+    return image, label
 
 def intensity_aug(image):
     # This is not used
