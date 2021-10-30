@@ -18,11 +18,21 @@ today = datetime.now()
 
 
 def create_dir(path):
+    """
+    Create directory if not available
+    :param path:
+    :return:
+    """
     if not os.path.exists(path):
         os.makedirs(path)
 
 
 def write_model_info(content=None):
+    """
+    Get the content append with the params and save as a file
+    :param content:
+    :return:
+    """
     _info_dir = os.path.join(CKPT_DIR, UNIQUE_NAME)
     create_dir(_info_dir)
     if content is None:
@@ -35,10 +45,26 @@ def write_model_info(content=None):
 
 # learning rate schedule
 def learning_rate_policy(epoch, lr, max_iteration=EPOCHS, power=0.9):
+    """
+    Learning rate scheduler
+    :param epoch:
+    :param lr:
+    :param max_iteration:
+    :param power:
+    :return:
+    """
     return lr * (1 - epoch / max_iteration) ** power
 
 
 def create_callbacks():
+    """
+    Different callback functions
+    LRschedule - to change the LR on the go
+    ModelCheckpoint - To save the best model
+    Tensorboard - Save logs for tensorboard analysis purpose
+    Early stopping - Stopping early if its not converging further
+    :return:
+    """
     lr_callback = LearningRateScheduler(learning_rate_policy)
     # lr_callback = ReduceLROnPlateau(monitor='loss', factor=0.7, patience=15, min_lr=1e-8)
     _ckpt_dir = os.path.join(CKPT_DIR, UNIQUE_NAME)
@@ -55,6 +81,13 @@ def create_callbacks():
 
 
 def train(deeplab_model):
+    """
+    The main training function
+    Load the dataset and then create callbacks
+    Call the fit method to train
+    :param deeplab_model: TF model
+    :return: history object
+    """
     # Loading the data generators
     train_data_gen, val_data_gen = load_dataset()
     # Creating callbacks

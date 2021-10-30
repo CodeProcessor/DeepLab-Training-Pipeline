@@ -26,6 +26,13 @@ def convolution_block(
         use_bias=False,
         kernel_seed=None
 ):
+    """
+    Customized CNN Block
+    Weight initializer is Glorot Normal
+    Batch normalization added before the activation
+    ELU activation
+    :return:
+    """
     x = layers.Conv2D(
         num_filters,
         kernel_size=kernel_size,
@@ -40,6 +47,11 @@ def convolution_block(
 
 
 def DilatedSpatialPyramidPooling(dspp_input):
+    """
+    Create dialoated pyramid pools
+    :param dspp_input: Input
+    :return: Output
+    """
     dims = dspp_input.shape
     x = layers.AveragePooling2D(pool_size=(dims[-3], dims[-2]))(dspp_input)
     x = convolution_block(x, kernel_size=1, use_bias=True)
@@ -56,6 +68,13 @@ def DilatedSpatialPyramidPooling(dspp_input):
 
 
 def DeeplabV3Plus(image_size, num_classes, freeze_backbone=False) -> tf.keras.Model:
+    """
+    Main function to create keras model
+    :param image_size: Input chape
+    :param num_classes: No of classes
+    :param freeze_backbone: Boolean to freeze
+    :return: Keras Model
+    """
     model_input = tf.keras.Input(shape=(image_size[0], image_size[1], 3))
     resnet50 = tf.keras.applications.ResNet50(
         weights="imagenet", include_top=False, input_tensor=model_input
@@ -85,6 +104,11 @@ def DeeplabV3Plus(image_size, num_classes, freeze_backbone=False) -> tf.keras.Mo
 
 
 def CompileModel(model: tf.keras.Model):
+    """
+    Compile the model
+    :param model: Keras Model
+    :return: Compiled keras model
+    """
     # Loss, optimizer and metrics
     # loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     optimizer = tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE)
@@ -101,8 +125,13 @@ def CompileModel(model: tf.keras.Model):
 
 
 def load_model(model_path, custom_objects=None):
+    """
+    Function to load entire model with weights - Not suing
+    :param model_path: PAth to the keras model
+    :param custom_objects: Custom functions implemented in the model
+    :return: Weights loaded model
+    """
     _deeplab_model = tf.keras.models.load_model(model_path, custom_objects=custom_objects)
-    # _deeplab_model = tf.keras.models.load_model(model_path)
     return _deeplab_model
 
 

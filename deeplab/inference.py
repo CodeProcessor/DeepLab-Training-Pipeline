@@ -10,6 +10,13 @@ from deeplab.dataset_voc import read_image
 
 
 def inference(model, image_path="", image_tensor=None):
+    """
+    Get the model and do the inference and post process it
+    :param model: Keras Model
+    :param image_path: Image path
+    :param image_tensor: Tensor
+    :return: prediction
+    """
     if image_tensor is None:
         image_tensor = read_image(image_path)
     predictions = model.predict(np.expand_dims((image_tensor), axis=0))

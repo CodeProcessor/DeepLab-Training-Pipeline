@@ -14,6 +14,10 @@ from deeplab.params import AUG_PROBABILITY
 
 
 class Augment(tf.keras.layers.Layer):
+    """
+    Custom augmentations class
+    """
+
     def __init__(self, seed=42):
         super().__init__()
         self.flip = (preprocessing.RandomFlip(mode="horizontal", seed=seed), AUG_PROBABILITY["flip"])

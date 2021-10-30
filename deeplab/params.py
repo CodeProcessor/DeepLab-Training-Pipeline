@@ -3,6 +3,9 @@
 @Filename:    params.py
 @Author:      sgx team
 @Time:        02/10/2021 00:03
+---------------------------------
+This contains almost all the configurations which used to train and interence
+All the parameters are self explanatory
 """
 from datetime import datetime
 
