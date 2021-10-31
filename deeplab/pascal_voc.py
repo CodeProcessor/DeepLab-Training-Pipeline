@@ -1,3 +1,7 @@
+"""
+Pascal VOC classes and color maps
+"""
+
 VOC_CLASSES = [
     "background",
     "aeroplane",

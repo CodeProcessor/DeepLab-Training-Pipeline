@@ -3,12 +3,17 @@
 @Filename:    dataset.py
 @Author:      sgx team
 @Time:        02/10/2021 00:01
+----------------------------------------
+Dataloader for CHIP dataset
+instance-level_human_parsing
+Link - https://keras.io/examples/vision/deeplabv3_plus/
 """
 
 import os
 from glob import glob
 
 import tensorflow as tf
+
 from deeplab.params import (
     IMAGE_SIZE,
     BATCH_SIZE,

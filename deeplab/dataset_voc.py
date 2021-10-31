@@ -20,12 +20,21 @@ from deeplab.utils import AugmentationWrapper, post_process
 
 
 def _get_image_list_from_file(filename):
+    """
+    Get the list of image names from the file
+    :param filename: file path
+    :return: list of images
+    """
     with open(filename, 'r') as fp:
         image_list = [_line.strip() for _line in fp.readlines()]
     return image_list
 
 
 def _get_image_lists():
+    """
+    Get all training and validation images and maks from directories
+    :return:
+    """
     train_image_list = _get_image_list_from_file(train_txt_file_voc)
     val_image_list = _get_image_list_from_file(val_txt_file_voc)
     all_trn_images = [os.path.join(DATASET_DIR, "JPEGImages", _im + '.jpg') for _im in train_image_list]
@@ -37,6 +46,10 @@ def _get_image_lists():
 
 
 def _get_tfrecord_paths_train_val():
+    """
+    List down all TF records
+    :return:
+    """
     return [
         sorted(glob.glob(TF_RECORDS_DIR + '/train*.tfrecord')),
         sorted(glob.glob(TF_RECORDS_DIR + '/val-*.tfrecord'))
@@ -58,6 +71,11 @@ def _convert_to_segmentation_mask(mask_path):
 
 
 def read_image(im_path):
+    """
+    Read image do preprocess and return
+    :param im_path:path to image
+    :return: Normalized image
+    """
     image = cv2.imread(im_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (IMAGE_SIZE[1], IMAGE_SIZE[0]), interpolation=cv2.INTER_AREA)
@@ -79,6 +97,12 @@ def generator_fn(image_list, mask_list):
 
 
 def data_generator(image_list, mask_list):
+    """
+    Normal datagenerator with image list and mask list
+    :param image_list: list of paths for images
+    :param mask_list: list of paths for masks
+    :return: TF Data dataset
+    """
     gen = generator_fn(image_list, mask_list)
     dataset = tf.data.Dataset.from_generator(gen, output_types=(tf.float32, tf.float32)
                                              , output_shapes=(
@@ -90,6 +114,11 @@ def data_generator(image_list, mask_list):
 
 
 def tfrecord_decode(tf_record):
+    """
+    Decode TF record and get image and mack back
+    :param tf_record:
+    :return: image and mask arrays
+    """
     features = {
         'image/encoded': tf.io.FixedLenFeature([], tf.string),
         'image/filename': tf.io.FixedLenFeature([], tf.string),
@@ -111,6 +140,15 @@ def tfrecord_decode(tf_record):
 
 def data_generator_tf_records(record_paths, limit=-1, augmentations=True, backbone="resnet50",
                               batch_size=BATCH_SIZE) -> tf.data.TFRecordDataset:
+    """
+    Create data-generator with TF records
+    :param record_paths: path to TF records
+    :param limit: Data load limit
+    :param augmentations: Augmentation enable or disable
+    :param backbone: Backbone name
+    :param batch_size: Batch size
+    :return: Data-generator
+    """
     ds = tf.data.TFRecordDataset([name for name in record_paths], num_parallel_reads=tf.data.AUTOTUNE) \
         .take(limit) \
         .shuffle(SHUFFLE_BUFFER_SIZE) \
@@ -124,10 +162,16 @@ def data_generator_tf_records(record_paths, limit=-1, augmentations=True, backbo
 
 
 def load_dataset():
+    """
+    Main function to load the dataset
+
+    :return: two data generators for training and validation
+    """
     if USE_TF_RECORDS:
         train, val = _get_tfrecord_paths_train_val()
         print(f"Training records: {train}")
         print(f"Validation records: {val}")
+        # Raise an error if the tf records are empty
         if len(val) == 0 or len(train) == 0:
             raise "Train or Val records cannot be empty"
         train_dataset = data_generator_tf_records(train, limit=NUM_TRAIN_IMAGES, backbone=BACKBONE)
@@ -143,6 +187,10 @@ def load_dataset():
     return train_dataset, val_dataset
 
 
+"""
+This main method for test purposes
+To quickly check and verify the train and validation images and masks
+"""
 if __name__ == '__main__':
     _train_dataset, _val_dataset = load_dataset()
     for element in _train_dataset:

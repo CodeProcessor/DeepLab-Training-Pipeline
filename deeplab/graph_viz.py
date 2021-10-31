@@ -8,6 +8,11 @@ from matplotlib import pyplot as plt
 
 
 def get_graphs(history):
+    """
+    Create graphs using history dictionary
+    :param history: History after training
+    :return: None
+    """
     for _keys in history.history.keys():
         plt.plot(history.history[_keys])
         plt.title("{} {}".format("Validation" if "val" in _keys else "Training", _keys))

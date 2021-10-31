@@ -4,6 +4,10 @@ from deeplab.params import IGNORED_CLASS_ID
 
 
 class UpdatedMeanIoU(tf.keras.metrics.MeanIoU):
+    """
+    Updated MIOU calculation with the addition of ignored classes.
+    """
+
     def __init__(self,
                  y_true=None,
                  y_pred=None,
